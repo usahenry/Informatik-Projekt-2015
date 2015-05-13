@@ -1,0 +1,40 @@
+Pflichtenheft
+
+Zeitplan:
+Abgabe Pflichtenheft: 13.5.15
+Abgabe Diagramme:  10.6.15
+Finale Abgabe: 8.07.15
+
+Anforderungen:
+1 Datenbank
+1 Liste
+1 Kompositum
+
+Eckdaten:
+Sprache: Englisch 
+Programmiersprache: Java
+Speicherung in Datenbank über MySQL
+
+Allgemeine Beschreibung:
+Fruit Ninja mit Kinect
+Früchte werden auf dem Bildschirm von unten hochgeworfen und müssen im Flug zerschnitten werden, bevor sie wieder hinunter fallen. Dies erfolgt mithilfe von Gesten, indem der Spieler mit der ausgestreckten Hand die Früchte zerschlägt. Das Spiel endet, wenn drei Früchte verfehlt wurden.  
+
+Funktionale Anforderungen:
+Klassen:
+Kinect (Erkennung der Bewegungen)
+<<abstract>> Items (Unterklassen: Fruit, PowerUps, Bombe)
+Game (Hauptklasse)
+GUI (Interface)
+MainMenu
+Highscore
+
+Das Spiel beginnt im MainMenu, in dem man ein neues Spiel beginnen, die Highscore-Liste ansehen oder die Einstellungen ändern kann. In den Einstellungen kann man Einstellen, mit welcher Hand man spielt (rechts, links) und den Vollbildmodus aktivieren.
+Beginnt man ein neues Spiel, wird eine Instanz von Game erzeugt, welche verschiedene Item-Instanzen generiert. Die Klasse Game besitzt ein Referenzattribut der Klasse Kinect, über welches sie die Position der Hand erkennen und verfolgen kann. Wenn die Hand mit der Position eines Items übereinstimmt, dann wird das Item zerstört. Eine Frucht wird in zwei Hälften zerschnitten, bei einem Power up wird die jeweilige Aktion durchgeführt. Im Falle einer Bombe oder wenn drei Früchte das Spielfeld unbeschadet wieder verlassen, hat man das Spiel verloren und kommt zur Highscore-Liste. Von dort aus kann man zum Hauptmenu zurück kehren.
+
+Nichtfunktionale Anforderungen:
+Intuitive Bedienung (Gestensteuerung)
+Ansprechendes Design
+Speicherung der Highscores im Internet
+Sprachsteuerung
+Verschiedene Spielmodi
+Verschiedene Power ups (z.B. Bonus Leben, Früchte fliegen langsamer)
