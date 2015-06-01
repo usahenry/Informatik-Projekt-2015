@@ -1,6 +1,7 @@
 package de.duererInfoProject.fruitNinja;
 
 import javax.swing.JPanel;
+import javax.swing.JButton;
 
 @SuppressWarnings("serial")
 public class Universe extends JPanel {

@@ -1,5 +1,7 @@
 package de.duererInfoProject.fruitNinja;
 
+import java.util.prefs.Preferences;
+
 import javax.swing.UIManager;
 
 public class Game {
@@ -8,6 +10,7 @@ public class Game {
 	private Highscore highscore;
 	private Kinect kinect;
 	private final Universe universe;
+	private Preferences preferences;
 
 	public static void main(String[] args) {
 		new Game();
@@ -16,6 +19,7 @@ public class Game {
 	
 	public Game() {
 		//Initialize other Classes
+		preferences = Preferences.userNodeForPackage(de.duererInfoProject.fruitNinja.Game.class);
 		universe = new Universe(this);
 		gui = new GUI(this);
 		highscore = new Highscore();
@@ -45,5 +49,8 @@ public class Game {
 	public Universe getUniverse() {
 		return universe;
 	}
-
+	
+	public Preferences getPreferences() {
+		return preferences;
+	}
 }
