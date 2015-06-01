@@ -70,11 +70,11 @@ public class Highscore {
 				int x1 = Integer.parseInt(o1[valueToSort]);
 				int x2 = Integer.parseInt(o2[valueToSort]);
 				if (x1 > x2) {
-					return 1;
+					return -1;
 				} else if (x1 == x2) {
 					return 0;
 				} else {
-					return -1;
+					return 1;
 				}
 			}
 		});

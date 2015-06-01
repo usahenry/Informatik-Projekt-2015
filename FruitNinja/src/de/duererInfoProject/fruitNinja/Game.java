@@ -1,22 +1,49 @@
 package de.duererInfoProject.fruitNinja;
 
+import javax.swing.UIManager;
+
 public class Game {
 	
-	private GUI gameGUI;
-	private Highscore gameHighscore;
+	private GUI gui;
+	private Highscore highscore;
+	private Kinect kinect;
+	private final Universe universe;
 
 	public static void main(String[] args) {
-		Game game = new Game();
+		new Game();
 
 	}
 	
 	public Game() {
 		//Initialize other Classes
-		gameGUI = new GUI();
-		gameHighscore = new Highscore();
-		gameHighscore.load();
-		gameHighscore.sort(1);
-		gameHighscore.save();
+		universe = new Universe(this);
+		gui = new GUI(this);
+		highscore = new Highscore();
+		kinect = new Kinect();
+	}
+	
+	public void setLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public GUI getGui() {
+		return gui;
+	}
+
+	public Highscore getHighscore() {
+		return highscore;
+	}
+
+	public Kinect getKinect() {
+		return kinect;
+	}
+
+	public Universe getUniverse() {
+		return universe;
 	}
 
 }
