@@ -1,7 +1,9 @@
 package de.duererInfoProject.fruitNinja;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 import javax.swing.JPanel;
-import javax.swing.JButton;
 
 @SuppressWarnings("serial")
 public class Universe extends JPanel {
@@ -10,5 +12,12 @@ public class Universe extends JPanel {
 	public Universe (Game g) {
 		super();
 		game = g;
+	}
+	
+	//Override paint Method to also paint the game
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2d = (Graphics2D) g;
+		//Paint parts
 	}
 }

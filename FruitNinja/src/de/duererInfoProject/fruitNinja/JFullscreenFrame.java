@@ -14,6 +14,7 @@ public class JFullscreenFrame extends JFrame {
 	
 	public void startFullscreen() {
 		if (fullscreen) return;
+		fullscreen = true;
 		dispose();
 		setUndecorated(true);
 		setBounds(0, 0, getToolkit().getScreenSize().width, getToolkit().getScreenSize().height);
@@ -23,6 +24,7 @@ public class JFullscreenFrame extends JFrame {
 	
 	public void stopFullscreen() {
 		if (!fullscreen) return;
+		fullscreen = false;
 		dispose();
 		setUndecorated(false);
 		setBounds(100, 100, 700, 490);
