@@ -147,7 +147,7 @@ public class GUI extends JFrame{
 					stopFullscreen();
 				} else {
 					game.getPreferences().putBoolean("fullscreen", true);
-					btnFullscreen.setText("Fulscreen Mode");
+					btnFullscreen.setText("Fullscreen Mode");
 					startFullscreen();
 				}
 			}
