@@ -20,7 +20,7 @@ public class Game {
 	public Game() {
 		//Initialize other Classes
 		preferences = Preferences.userNodeForPackage(de.duererInfoProject.fruitNinja.Game.class);
-		universe = new Universe(this);
+		universe = new Universe(this, Game.class.getResource("img/background.jpg").getPath());
 		gui = new GUI(this);
 		highscore = new Highscore();
 		kinect = new Kinect();
@@ -52,5 +52,9 @@ public class Game {
 	
 	public Preferences getPreferences() {
 		return preferences;
+	}
+	
+	public void log(String str) {
+		System.out.println(str);
 	}
 }

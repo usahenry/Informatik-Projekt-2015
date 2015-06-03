@@ -1,5 +1,5 @@
 package de.duererInfoProject.fruitNinja;
 
-public abstract class Items {
+public abstract class Item {
 
 }
