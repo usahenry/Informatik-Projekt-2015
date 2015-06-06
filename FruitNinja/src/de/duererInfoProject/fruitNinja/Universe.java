@@ -11,18 +11,19 @@ import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
 public class Universe extends JPanelBG {
-	private Game game;
 	
-	public Universe (Game g, String img) {
+	private Controller controller;
+	
+	public Universe (Controller g, String img) {
 		super(img);
-		game = g;
+		controller = g;
 		setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				game.getGui().pauseUniverse();
+				controller.getGui().pauseUniverse();
 			}
 		});
 		lblNewLabel.setIcon(new ImageIcon(Universe.class.getResource("/de/duererInfoProject/fruitNinja/img/pause-icon.png")));

@@ -20,26 +20,26 @@ import javax.swing.SwingConstants;
 public class GUI extends JFrame{
 
 	private static final long serialVersionUID = 1L;
-	private Game game;
+	private Controller controller;
 	private JPanel settings, mainMenu;
 	private Universe universe;
 	private boolean fullscreen;
-	private Rectangle DIMENSIONS = new Rectangle(100, 100, 750, 550);
+	private Rectangle DIMENSIONS = new Rectangle(100, 100, 1280, 800);
 
-	public GUI(Game g) {
+	public GUI(Controller g) {
 		//Call JFrame Constructor and setup Attributes
 		super();
 		setMinimumSize(new Dimension(750, 550));
-		game = g;
-		universe = game.getUniverse();
+		controller = g;
+		universe = controller.getUniverse();
 		
 		//Setup GUI and start fullscreen Mode if necessary 
 		setBounds(DIMENSIONS);
-		boolean startFullscreen = game.getPreferences().getBoolean("fullscreen", false);
+		boolean startFullscreen = controller.getPreferences().getBoolean("fullscreen", false);
 		if (startFullscreen) startFullscreen();
 		fullscreen = startFullscreen;
 		
-		game.setLookAndFeel();
+		controller.setLookAndFeel();
 		initialize();
 		setVisible(true);
 	}
@@ -142,17 +142,17 @@ public class GUI extends JFrame{
 		JButton btnFullscreen = new JButton("Window Mode");
 		btnFullscreen.setMaximumSize(new Dimension(200, 50));
 		btnFullscreen.setPreferredSize(new Dimension(200, 50));
-		if (game.getPreferences().getBoolean("fullscreen", false)) btnFullscreen.setText("Fullscreen Mode");
+		if (controller.getPreferences().getBoolean("fullscreen", false)) btnFullscreen.setText("Fullscreen Mode");
 		btnFullscreen.setAlignmentX(Component.CENTER_ALIGNMENT);
 		verticalBox.add(btnFullscreen);
 		btnFullscreen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (game.getPreferences().getBoolean("fullscreen", false)) {
-					game.getPreferences().putBoolean("fullscreen", false);
+				if (controller.getPreferences().getBoolean("fullscreen", false)) {
+					controller.getPreferences().putBoolean("fullscreen", false);
 					btnFullscreen.setText("Window Mode");
 					stopFullscreen();
 				} else {
-					game.getPreferences().putBoolean("fullscreen", true);
+					controller.getPreferences().putBoolean("fullscreen", true);
 					btnFullscreen.setText("Fullscreen Mode");
 					startFullscreen();
 				}
@@ -175,13 +175,13 @@ public class GUI extends JFrame{
 		btnHand.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnHand.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Boolean rightHand = game.getPreferences().getBoolean("hand", true);
+				Boolean rightHand = controller.getPreferences().getBoolean("hand", true);
 				if (rightHand) {
-					game.getPreferences().putBoolean("hand", false);
+					controller.getPreferences().putBoolean("hand", false);
 					btnHand.setText("Left Hand");
 					btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/left-hand-icon.png")));
 				} else {
-					game.getPreferences().putBoolean("hand", true);
+					controller.getPreferences().putBoolean("hand", true);
 					btnHand.setText("Right Hand");
 					btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/right-hand-icon.png")));
 				}
@@ -193,7 +193,7 @@ public class GUI extends JFrame{
 		
 		Component verticalGlue_2 = Box.createVerticalGlue();
 		verticalBox.add(verticalGlue_2);
-		if (!game.getPreferences().getBoolean("hand", true)) {
+		if (!controller.getPreferences().getBoolean("hand", true)) {
 			btnHand.setText("Left Hand");
 			btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/left-hand-icon.png")));
 		}

@@ -1,60 +1,26 @@
 package de.duererInfoProject.fruitNinja;
 
-import java.util.prefs.Preferences;
-
-import javax.swing.UIManager;
+import java.util.LinkedList;
+import java.util.Random;
 
 public class Game {
-	
-	private GUI gui;
-	private Highscore highscore;
-	private Kinect kinect;
-	private final Universe universe;
-	private Preferences preferences;
 
-	public static void main(String[] args) {
-		new Game();
+	private Controller controller;
+	private Universe universe;
+	private LinkedList<Item> items;
+	private Random random;
 
-	}
-	
-	public Game() {
-		//Initialize other Classes
-		preferences = Preferences.userNodeForPackage(de.duererInfoProject.fruitNinja.Game.class);
-		universe = new Universe(this, Game.class.getResource("img/background.jpg").getPath());
-		gui = new GUI(this);
-		highscore = new Highscore();
-		kinect = new Kinect();
+	public Game(Controller controller) {
+		this.controller = controller;
+		universe = controller.getUniverse();
+		items = new LinkedList<Item>();
+		random = new Random();
 	}
 	
-	public void setLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-	}
-
-	public GUI getGui() {
-		return gui;
-	}
-
-	public Highscore getHighscore() {
-		return highscore;
-	}
-
-	public Kinect getKinect() {
-		return kinect;
-	}
-
-	public Universe getUniverse() {
-		return universe;
+	public void spawnFruit() {
+		int x = random.nextInt(universe.getWidth() - 200) + 200;
+		int y = universe.getHeight() + 40;
+//		items.add(new Fruit(x, y, random.nextInt(10), random.nextInt(10), universe)); //Fruit(x, y, speedX, speedY, universe)
 	}
 	
-	public Preferences getPreferences() {
-		return preferences;
-	}
-	
-	public void log(String str) {
-		System.out.println(str);
-	}
 }
