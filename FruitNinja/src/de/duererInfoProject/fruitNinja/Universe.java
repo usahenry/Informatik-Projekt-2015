@@ -8,11 +8,14 @@ import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class Universe extends JPanelBG {
 	
 	private Controller controller;
+	private JLabel countdown;
 	
 	public Universe (Controller g, String img) {
 		super(img);
@@ -46,8 +49,22 @@ public class Universe extends JPanelBG {
 		
 		pmgrn.setBounds(50, 50, 200, 200);
 		add(pmgrn);
-
 		
+		countdown = new JLabel("3");
+		countdown.setHorizontalAlignment(SwingConstants.CENTER);
+		countdown.setHorizontalTextPosition(SwingConstants.CENTER);
+		countdown.setFont(new Font("Narkisim", Font.BOLD, 90));
+		countdown.setBounds(getWidth() - 30, getHeight() - 30, 60, 60);
+		add(countdown);
+	}
+	
+	public void setCountdown(int count) {
+		if (count > 0) {
+			countdown.setBounds(getWidth() - 30, getHeight() - 30, 60, 60);
+			countdown.setText(count + "");
+		} else {
+			countdown.setText("");
+		}
 	}
 	
 	//Override paint Method to also paint the game
