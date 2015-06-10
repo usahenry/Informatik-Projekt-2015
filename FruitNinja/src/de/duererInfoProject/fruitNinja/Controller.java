@@ -29,6 +29,7 @@ public class Controller {
 
 	public void newGame() {
 		game = new Game(this);
+		game.start();
 	}
 	
 	public void setLookAndFeel() {
@@ -57,6 +58,10 @@ public class Controller {
 	
 	public Preferences getPreferences() {
 		return preferences;
+	}
+	
+	public Game getGame() {
+		return game;
 	}
 	
 	public void log(String str) {

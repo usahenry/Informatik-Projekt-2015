@@ -1,14 +1,15 @@
 package de.duererInfoProject.fruitNinja;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import java.awt.Font;
 import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
@@ -16,6 +17,8 @@ public class Universe extends JPanelBG {
 	
 	private Controller controller;
 	private JLabel countdown;
+	private final double GRAVITY = -0.2;
+	private Game game;
 	
 	public Universe (Controller g, String img) {
 		super(img);
@@ -67,6 +70,10 @@ public class Universe extends JPanelBG {
 		}
 	}
 	
+	public double getGravity() {
+		return GRAVITY;
+	}
+	
 	//Override paint Method to also paint the game
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -74,5 +81,10 @@ public class Universe extends JPanelBG {
 //		img = ImageIO.read(new File("Pomegrenate.png"));
 //		g2d.drawString("Hello", 10, 10);
 		//Paint parts
+		game = controller.getGame();
+		for (Item item : game.getItemList()) {
+			item.move();
+			item.paint(g2d);
+		}
 	}
 }

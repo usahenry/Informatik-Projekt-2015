@@ -251,6 +251,7 @@ public class GUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				universe.setVisible(true);
 				mainMenu.setVisible(false);
+				controller.newGame();
 			}
 		});
 		

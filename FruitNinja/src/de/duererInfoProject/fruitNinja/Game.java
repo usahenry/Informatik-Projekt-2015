@@ -42,8 +42,9 @@ public class Game {
 	
 	public void start() {
 		countdown(3);
-		tick(3000);
-		randomItemTick(3500);
+		tick(10);
+		itemList.add(new Fruit(universe.getWidth() / 4, universe.getHeight() - 20, 4, 15, universe));
+		//randomItemTick(3500);
 	}
 	
 	public void countdown(int count) {
@@ -79,5 +80,9 @@ public class Game {
 				randomItemTick(random.nextInt(1000) + 500);
 			}
 		}, time);
+	}
+	
+	public LinkedList<Item> getItemList() {
+		return itemList;
 	}
 }

@@ -1,15 +1,10 @@
 package de.duererInfoProject.fruitNinja;
 
+import java.awt.Graphics2D;
+
 public class Fruit extends Item {
 	
-	private int x, y, speedX, speedY;
-	private Universe universe;
-	
 	public Fruit(int x, int y, int speedX, int speedY, Universe universe) {
-		this.x = x;
-		this.y = y;
-		this.speedX = speedX;
-		this.speedY = speedY;
-		this.universe = universe;
+		super(x, y, speedX, speedY, universe);
 	}
 }
