@@ -32,26 +32,31 @@ public class Game {
 		int x = random.nextInt(universe.getWidth() - SPAWN_BORDER * 2) + SPAWN_BORDER;
 		int y = universe.getHeight() + 40;
 		int speedX = random.nextInt(10) + 5;
-		int speedY = random.nextInt(10) + 5;
+		double speedY = random.nextInt(10) + 5;
 		if (itemType == "Fruit") {
-			itemList.add(new Fruit(x, y, speedX, speedY, universe)); //Fruit(x, y, speedX, speedY, universe)
+			itemList.add(new Fruit(x, y, speedX, speedY, this, universe)); //Fruit(x, y, speedX, speedY, universe)
 		} else if (itemType == "Bomb") {
-			itemList.add(new Bomb(x, y, speedX, speedY, universe));
+			itemList.add(new Bomb(x, y, speedX, speedY, this, universe));
 		}
 	}
 	
 	public void start() {
 		countdown(3);
 		tick(10);
-		itemList.add(new Fruit(universe.getWidth() / 4, universe.getHeight() - 20, 4, 15, universe));
-		//randomItemTick(3500);
+		//itemList.add(new Fruit(universe.getWidth() / 4, universe.getHeight() - 20, 4, 15, universe));
+		randomItemTick(3500);
+	}
+	
+	public void stop() {
+		timer.cancel();
+		itemList.clear();
 	}
 	
 	public void countdown(int count) {
+		universe.setCountdown(count);
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				universe.setCountdown(count);
 				if (count > 0) countdown(count - 1);
 			}
 		}, 1000);
@@ -80,6 +85,10 @@ public class Game {
 				randomItemTick(random.nextInt(1000) + 500);
 			}
 		}, time);
+	}
+	
+	public void outOfScreen(Item item) {
+		itemList.remove(item);
 	}
 	
 	public LinkedList<Item> getItemList() {

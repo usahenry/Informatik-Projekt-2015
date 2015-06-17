@@ -32,6 +32,10 @@ public class Controller {
 		game.start();
 	}
 	
+	public void stopGame() {
+		game.stop();
+	}
+	
 	public void setLookAndFeel() {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");

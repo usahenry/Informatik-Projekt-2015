@@ -67,6 +67,7 @@ public class GUI extends JFrame{
 	public void pauseUniverse() {
 		universe.setVisible(false);
 		mainMenu.setVisible(true);
+		controller.stopGame();
 	}
 
 	//Initialize the contents of the frame.
