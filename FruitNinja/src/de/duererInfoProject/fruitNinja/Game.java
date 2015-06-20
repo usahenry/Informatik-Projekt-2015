@@ -28,15 +28,12 @@ public class Game {
 		active = true;
 	}
 	
-	public void spawnItemRandom(String itemType) {
+	public void spawnItemRandom(int itemID) {
 		int x = random.nextInt(universe.getWidth() - SPAWN_BORDER * 2) + SPAWN_BORDER;
-		int y = universe.getHeight() + 40;
-		int speedX = random.nextInt(10) + 5;
-		double speedY = random.nextInt(10) + 5;
-		if (itemType == "Fruit") {
-			itemList.add(new Fruit(x, y, speedX, speedY, this, universe)); //Fruit(x, y, speedX, speedY, universe)
-		} else if (itemType == "Bomb") {
-			itemList.add(new Bomb(x, y, speedX, speedY, this, universe));
+		if (itemID == Fruit.ITEM_ID) {
+			itemList.add(new Fruit(x, this, universe));
+		} else if (itemID == Bomb.ITEM_ID) {
+			itemList.add(new Bomb(x, this, universe));
 		}
 	}
 	
@@ -78,9 +75,9 @@ public class Game {
 			@Override
 			public void run() {
 				if (random.nextInt(10) > 1) {
-					spawnItemRandom("Fruit");
+					spawnItemRandom(1);
 				} else {
-					spawnItemRandom("Bomb");
+					spawnItemRandom(2);
 				}
 				randomItemTick(random.nextInt(1000) + 500);
 			}

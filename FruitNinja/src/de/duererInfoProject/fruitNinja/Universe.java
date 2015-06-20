@@ -19,7 +19,7 @@ public class Universe extends JPanelBG {
 	
 	private Controller controller;
 	private JLabel countdown;
-	private final double GRAVITY = -0.2;
+	private final double GRAVITY = -0.15;
 	private Game game;
 	
 	public Universe (Controller g, String img) {
@@ -62,7 +62,6 @@ public class Universe extends JPanelBG {
 	}
 	
 	public void setCountdown(int count) {
-		controller.log(count + "");
 		if (count > 0) {
 			countdown.setBounds((getWidth()/2) - 75, (getHeight()/2) - 75, 150, 150);
 			countdown.setText(count + "");

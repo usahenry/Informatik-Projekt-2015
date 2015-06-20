@@ -4,7 +4,9 @@ import java.awt.Graphics2D;
 
 public class Fruit extends Item {
 	
-	public Fruit(int x, int y, int speedX, double speedY, Game game, Universe universe) {
-		super(x, y, speedX, speedY, game, universe);
+	public static final int ITEM_ID = 1;
+	
+	public Fruit(int x, Game game, Universe universe) {
+		super(x, game, universe);
 	}
 }
