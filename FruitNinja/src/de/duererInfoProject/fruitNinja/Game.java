@@ -9,7 +9,9 @@ public class Game {
 
 	private Controller controller;
 	private Universe universe;
+	private Cursor cursor;
 	private LinkedList<Item> itemList;
+	private LinkedList<ItemPart> itemPartsList;
 	private Random random;
 	private Timer timer;
 	private int lives, score, playtime;
@@ -19,7 +21,9 @@ public class Game {
 	public Game(Controller controller) {
 		this.controller = controller;
 		universe = controller.getUniverse();
+		cursor = new Cursor(this, universe);
 		itemList = new LinkedList<Item>();
+		itemPartsList = new LinkedList<ItemPart>();
 		random = new Random();
 		timer = new Timer();
 		lives = 3;
@@ -28,25 +32,26 @@ public class Game {
 		active = true;
 	}
 	
-	public void spawnItemRandom(int itemID) {
+	public void spawnItemRandom(int itemTypeID) {
 		int x = random.nextInt(universe.getWidth() - SPAWN_BORDER * 2) + SPAWN_BORDER;
-		if (itemID == Fruit.ITEM_ID) {
+		if (itemTypeID == Fruit.ItemTypeID) {
 			itemList.add(new Fruit(x, this, universe));
-		} else if (itemID == Bomb.ITEM_ID) {
+		} else if (itemTypeID == Bomb.ItemTypeID) {
 			itemList.add(new Bomb(x, this, universe));
 		}
 	}
 	
 	public void start() {
+		universe.setLives(3);
 		countdown(3);
 		tick(10);
-		//itemList.add(new Fruit(universe.getWidth() / 4, universe.getHeight() - 20, 4, 15, universe));
 		randomItemTick(3500);
 	}
 	
 	public void stop() {
 		timer.cancel();
 		itemList.clear();
+		itemPartsList.clear();
 	}
 	
 	public void countdown(int count) {
@@ -84,11 +89,48 @@ public class Game {
 		}, time);
 	}
 	
-	public void outOfScreen(Item item) {
+	public void itemOutOfScreen(Item item) {
 		itemList.remove(item);
+		lives--;
+		updateLives();
+	}
+	
+	public void hit(Item item) {
+		controller.log("hit");
+		if (item.getItemTypeID() == Fruit.ItemTypeID) {
+			for (ItemPart itemPart : item.createItemParts()) {
+				itemPartsList.add(itemPart);
+			}
+			score++;
+			updateScore();
+		} else if (item.getItemTypeID() == Bomb.ItemTypeID) {
+			lives--;
+			updateLives();
+		}
+		itemList.remove(item);
+	}
+	
+	public void updateScore() {
+		universe.setScore(score);
+	}
+	
+	public void updateLives() {
+		universe.setLives(lives);
+	}
+	
+	public Cursor getCursor() {
+		return cursor;
+	}
+	
+	public Controller getController() {
+		return controller;
 	}
 	
 	public LinkedList<Item> getItemList() {
 		return itemList;
+	}
+	
+	public LinkedList<ItemPart> getItemPartsList() {
+		return itemPartsList;
 	}
 }

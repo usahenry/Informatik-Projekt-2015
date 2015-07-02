@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 public class Bomb extends Item {
 
-	public static final int ITEM_ID = 2;
+	public static final int ItemTypeID = 2;
 	
 	public Bomb(int x, Game game, Universe universe) {
 		super(x, game, universe);
@@ -16,5 +16,9 @@ public class Bomb extends Item {
 		g2d.setColor(Color.RED);
 		g2d.fillOval(x, y, 40, 40);
 		g2d.setColor(c);
+	}
+	
+	public int getItemTypeID() {
+		return ItemTypeID;
 	}
 }

@@ -1,15 +1,16 @@
 package de.duererInfoProject.fruitNinja;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.LayoutManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
 
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -18,14 +19,13 @@ import javax.swing.SwingConstants;
 public class Universe extends JPanelBG {
 	
 	private Controller controller;
-	private JLabel countdown;
+	private JLabel countdown, score, lives;
 	private final double GRAVITY = -0.15;
 	private Game game;
 	
 	public Universe (Controller g, String img) {
 		super(img);
 		controller = g;
-		setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.addMouseListener(new MouseAdapter() {
@@ -59,8 +59,23 @@ public class Universe extends JPanelBG {
 		countdown.setFont(new Font("Narkisim", Font.BOLD, 200));
 		countdown.setForeground(Color.WHITE);
 		add(countdown);
+		
+		score = new JLabel("0");
+		score.setHorizontalAlignment(SwingConstants.LEFT);
+		score.setHorizontalTextPosition(SwingConstants.LEFT);
+		score.setFont(new Font("Narkisim", Font.BOLD, 50));
+		score.setForeground(Color.WHITE);
+		score.setBounds(50, 10, 100, 50);
+		add(score);
+		
+		lives = new JLabel("3");
+		score.setHorizontalAlignment(SwingConstants.RIGHT);
+		lives.setHorizontalTextPosition(SwingConstants.RIGHT);
+		lives.setFont(new Font("Narkisim", Font.BOLD, 50));
+		lives.setForeground(Color.WHITE);
+		add(lives);
 	}
-	
+
 	public void setCountdown(int count) {
 		if (count > 0) {
 			countdown.setBounds((getWidth()/2) - 75, (getHeight()/2) - 75, 150, 150);
@@ -68,6 +83,15 @@ public class Universe extends JPanelBG {
 		} else {
 			countdown.setText("");
 		}
+	}
+	
+	public void setScore(int s) {
+		score.setText("" + s);
+	}
+	
+	public void setLives(int l) {
+		lives.setText("" + l);
+		lives.setBounds(getWidth() - 50, 10, 100, 50);
 	}
 	
 	public double getGravity() {
@@ -78,13 +102,20 @@ public class Universe extends JPanelBG {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
-//		img = ImageIO.read(new File("Pomegrenate.png"));
-//		g2d.drawString("Hello", 10, 10);
-		//Paint parts
+		
+		//Draw items and cursor
 		game = controller.getGame();
+		Cursor cursor = game.getCursor();
+		cursor.updatePoints();
+		cursor.paint(g2d);
 		for (Item item : game.getItemList()) {
 			item.move();
 			item.paint(g2d);
+			item.checkHit(cursor.getPoints());
+		}
+		for (ItemPart itemPart : game.getItemPartsList()) {
+			itemPart.move();
+			itemPart.paint(g2d);
 		}
 	}
 }
