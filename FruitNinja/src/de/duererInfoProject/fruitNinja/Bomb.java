@@ -11,10 +11,11 @@ public class Bomb extends Item {
 		super(x, game, universe);
 	}
 	
+	//Overrides Items paint method to draw the bomb red
 	public void paint(Graphics2D g2d) {
 		Color c = g2d.getColor();
 		g2d.setColor(Color.RED);
-		g2d.fillOval(x, y, 40, 40);
+		g2d.fillOval(x, y, 50, 50);
 		g2d.setColor(c);
 	}
 	

@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+//Controls the Highscore
 public class Highscore {
 	
 	private File highscoreFile;
@@ -62,7 +63,7 @@ public class Highscore {
 		}
 	}
 	
-	//Sorts HighscoreList by String[valueToSort]
+	//Sorts highscoreList by highcoreList[@valueToSort]
 	public void sort(int valueToSort) {
 		highscoreList.sort( new Comparator<String[]>() {
 			@Override

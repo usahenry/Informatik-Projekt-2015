@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+//Extends JPanel to have an Image as background
 public class JPanelBG extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
@@ -15,14 +16,16 @@ public class JPanelBG extends JPanel {
 	
 	public JPanelBG(String img) {
 		super();
+		
+		//Try to get the img-File
 		try {
 			bg = ImageIO.read(new File(img));
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 	
+	//Paint the background and all other components
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);

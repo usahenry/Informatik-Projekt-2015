@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.Random;
 
+//Template for all other Items
 public abstract class Item {
 
 	public int x, y, speedX, mass;
@@ -16,14 +17,16 @@ public abstract class Item {
 	public Universe universe;
 	public boolean wasVisible;
 	public Random random;
-	public static final int ItemTypeID = 0;
+	public static final int ItemTypeID = 0; //Used to identify the type of an Item
 	
 	public Item(int x, Game game, Universe universe) {
 		//##### ### ##  ###
 		//  #   # # # # # #  Koordinaten in float
 		//  #   # # # # # #
 		//  #   ### ##  ###
+		//TO-DO: Wahrscheinlichkeit nach links zu fliegen wird größer, je weiter rechts man ist!
 		
+		//Initializing attributes
 		this.x = x;
 		this.game = game;
 		this.universe = universe;
@@ -32,12 +35,12 @@ public abstract class Item {
 		y = universe.getHeight() + 40;
 		speedX = random.nextInt(5) + 2;
 		if (x > universe.getWidth() / 2) speedX = -speedX;
-		//TO-DO: Wahrscheinlichkeit nach links zu fliegen wird größer, je weiter rechts man ist!
 		speedY = (random.nextInt(50) / 10) + 10;
 		mass = 1 - random.nextInt(10) / 10;
 		wasVisible = false;
 	}
 	
+	//Alternative constructor used by ItemParts
 	public Item(int x, int y, boolean leftSide, Game game, Universe universe) {
 		this.x = x;
 		this.y = y;
@@ -51,10 +54,13 @@ public abstract class Item {
 		wasVisible = true;
 	}
 	
+	//Called in every universe.repaint()
+	//Calculates speedY change by gravity and moves the Item, checks if Item is still on the screen
 	public void move() {
 		speedY += (universe.getGravity() * mass);
 		x += speedX;
 		y -= Math.round(speedY);
+		
 		if (!wasVisible) {
 			if (onScreen()) {
 				wasVisible = true;
@@ -66,9 +72,11 @@ public abstract class Item {
 		}
 	}
 	
+	//Called in every universe.repaint()
+	//Paints the Item on the screen
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.WHITE);
-		g2d.fillOval(x, y, 40, 40);
+		g2d.fillOval(x, y, 50, 50);
 	}
 	
 	public double getSpeedY() {
@@ -79,16 +87,20 @@ public abstract class Item {
 		return speedX;
 	}
 	
+	//Called by Game if the Item gets hit
+	//Creates and returns 2 ItemParts at the current position
 	public LinkedList<ItemPart> createItemParts() {
 		LinkedList<ItemPart> return_list = new LinkedList<ItemPart>();
 		return_list.add(new ItemPart(x, y, true, game, universe));
-		return_list.add(new ItemPart(x + 20, y, false, game, universe));
+		return_list.add(new ItemPart(x + 25, y, false, game, universe));
 		return return_list;
 	}
 	
-	public void checkHit(LinkedList<Point> points) {
-		Ellipse2D.Double circle = new Ellipse2D.Double(x + 20, y + 20, 20, 20);
-		for (Point p : points) {
+	//Called in every universe.repaint()
+	//Checks if any @points are in the current bounds of the Item
+	public void checkHit(LinkedList<Point> cursorBoints) {
+		Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 50, 50);
+		for (Point p : cursorBoints) {
 			if (circle.contains((Point2D) p)) {
 				game.hit(this);
 				return;
@@ -100,11 +112,8 @@ public abstract class Item {
 		return ItemTypeID;
 	}
 	
+	//Checks if the Item is visible on the screen
 	public boolean onScreen() {
-		if (x > -50 && x < universe.getWidth() && y > -50 && y < universe.getHeight()) {
-			return true;
-		} else {
-			return false;
-		}
+		return (x > -50 && x < universe.getWidth() && y > -50 && y < universe.getHeight());
 	}
 }

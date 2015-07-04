@@ -67,12 +67,17 @@ public class GUI extends JFrame{
 		setVisible(true);
 	}
 	
-	//Called by pressign the pause button
-	//Shows the main menu and stops the game
-	public void pauseUniverse() {
+	//Called when the game gets stopped
+	//Shows the main menu
+	public void backToMenu() {
+		settings.setVisible(false);
 		universe.setVisible(false);
 		mainMenu.setVisible(true);
-		controller.stopGame();
+	}
+	
+	public void showUniverse() {
+		universe.setVisible(true);
+		mainMenu.setVisible(false);
 	}
 
 	//Initialize the contents of the frame.
@@ -223,8 +228,7 @@ public class GUI extends JFrame{
 		btnBack.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/back-icon.png")));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				settings.setVisible(false);
-				mainMenu.setVisible(true);
+				backToMenu();
 			}
 		});
 		btnBack.setFont(new Font("SansSerif", Font.BOLD, 15));
@@ -255,8 +259,6 @@ public class GUI extends JFrame{
 		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 15));
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				universe.setVisible(true);
-				mainMenu.setVisible(false);
 				controller.newGame();
 			}
 		});

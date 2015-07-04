@@ -29,12 +29,14 @@ public class Controller {
 
 	//Starts a new Game
 	public void newGame() {
+		gui.showUniverse();
 		game = new Game(this);
 		game.start();
 	}
 	
 	//Stops the running game
 	public void stopGame() {
+		gui.backToMenu();
 		game.stop();
 	}
 	
@@ -46,7 +48,11 @@ public class Controller {
 			System.err.println(e.getMessage());
 		}
 	}
-
+	
+	public void restartGame() {
+		stopGame();
+		newGame();
+	}
 	
 	public GUI getGui() {
 		return gui;
