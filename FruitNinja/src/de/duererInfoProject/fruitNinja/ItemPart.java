@@ -18,6 +18,15 @@ public class ItemPart extends Item {
 		g2d.fillOval(x, y, 20, 40);
 	}
 	
+	public void move() {
+		speedY += (universe.getGravity() * mass);
+		x += speedX;
+		y -= Math.round(speedY);
+		if (!onScreen()) {
+			game.itemPartOutOfScreen(this);
+		}
+	}
+	
 	public int getItemTypeID() {
 		return ItemTypeID;
 	}

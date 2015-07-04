@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+//Manages the GUI
 public class GUI extends JFrame{
 
 	private static final long serialVersionUID = 1L;
@@ -27,13 +28,13 @@ public class GUI extends JFrame{
 	private Rectangle DIMENSIONS = new Rectangle(100, 100, 1280, 800);
 
 	public GUI(Controller g) {
-		//Call JFrame Constructor and setup Attributes
+		//Call JFrame Constructor and initialize Attributes
 		super();
 		setMinimumSize(new Dimension(750, 550));
 		controller = g;
 		universe = controller.getUniverse();
 		
-		//Setup GUI and start fullscreen Mode if necessary 
+		//Setup GUI and start fullscreen mode if necessary 
 		setBounds(DIMENSIONS);
 		boolean startFullscreen = controller.getPreferences().getBoolean("fullscreen", false);
 		if (startFullscreen) startFullscreen();
@@ -44,6 +45,7 @@ public class GUI extends JFrame{
 		setVisible(true);
 	}
 	
+	//Starts fullscreen mode
 	public void startFullscreen() {
 		if (fullscreen) return;
 		fullscreen = true;
@@ -53,7 +55,8 @@ public class GUI extends JFrame{
 		setResizable(false);
 		setVisible(true);
 	}
-	
+
+	//Stops fullscreen mode
 	public void stopFullscreen() {
 		if (!fullscreen) return;
 		fullscreen = false;
@@ -64,6 +67,8 @@ public class GUI extends JFrame{
 		setVisible(true);
 	}
 	
+	//Called by pressign the pause button
+	//Shows the main menu and stops the game
 	public void pauseUniverse() {
 		universe.setVisible(false);
 		mainMenu.setVisible(true);

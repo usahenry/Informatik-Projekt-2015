@@ -4,6 +4,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.UIManager;
 
+//Controls the application and holds all the references to the other classes 
 public class Controller {
 	
 	private GUI gui;
@@ -26,15 +27,18 @@ public class Controller {
 		kinect = new Kinect();
 	}
 
+	//Starts a new Game
 	public void newGame() {
 		game = new Game(this);
 		game.start();
 	}
 	
+	//Stops the running game
 	public void stopGame() {
 		game.stop();
 	}
 	
+	//Used by UI-Classes to set the look and feel
 	public void setLookAndFeel() {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -43,6 +47,7 @@ public class Controller {
 		}
 	}
 
+	
 	public GUI getGui() {
 		return gui;
 	}
@@ -67,6 +72,7 @@ public class Controller {
 		return game;
 	}
 	
+	//Easter egg: Because I'm too lazy I need this
 	public void log(String str) {
 		System.out.println(str);
 	}

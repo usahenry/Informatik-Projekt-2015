@@ -75,6 +75,10 @@ public class Universe extends JPanelBG {
 		lives.setForeground(Color.WHITE);
 		add(lives);
 	}
+	
+	public void postInit() {
+		lives.setBounds(getWidth() - 50, 10, 100, 50);
+	}
 
 	public void setCountdown(int count) {
 		if (count > 0) {
@@ -91,7 +95,6 @@ public class Universe extends JPanelBG {
 	
 	public void setLives(int l) {
 		lives.setText("" + l);
-		lives.setBounds(getWidth() - 50, 10, 100, 50);
 	}
 	
 	public double getGravity() {

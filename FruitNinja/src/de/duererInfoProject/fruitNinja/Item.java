@@ -101,7 +101,7 @@ public abstract class Item {
 	}
 	
 	public boolean onScreen() {
-		if ((x < -50 || x > universe.getWidth()) && (y < -50 || y < universe.getHeight())) {
+		if (x > -50 && x < universe.getWidth() && y > -50 && y < universe.getHeight()) {
 			return true;
 		} else {
 			return false;
