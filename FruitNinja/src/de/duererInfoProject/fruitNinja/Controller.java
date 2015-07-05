@@ -21,9 +21,9 @@ public class Controller {
 	public Controller() {
 		//Initialize other Classes
 		preferences = Preferences.userNodeForPackage(de.duererInfoProject.fruitNinja.Controller.class);
+		highscore = new Highscore();
 		universe = new Universe(this, Controller.class.getResource("img/background.jpg").getPath());
 		gui = new GUI(this);
-		highscore = new Highscore();
 		kinect = new Kinect();
 	}
 

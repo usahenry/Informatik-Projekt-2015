@@ -24,7 +24,7 @@ public class Cursor {
 	}
 	
 	//Called in every universe.repaint()
-	//Removes all lastPoints exceding the LAST_POINTS_NUMBER and adds the current mouse/hand position
+	//Removes all lastPoints exceeding the LAST_POINTS_NUMBER and adds the current mouse/hand position
 	public void updatePoints() {
 		Point lastPoint = universe.getMousePosition();
 		if (lastPoint != null) {

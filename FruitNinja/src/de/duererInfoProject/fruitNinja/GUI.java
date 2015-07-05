@@ -1,12 +1,14 @@
 package de.duererInfoProject.fruitNinja;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -15,17 +17,22 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 //Manages the GUI
 public class GUI extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	private Controller controller;
+	private Highscore highscore;
 	private JPanel settings, mainMenu;
 	private Universe universe;
 	private boolean fullscreen;
 	private Rectangle DIMENSIONS = new Rectangle(100, 100, 1280, 800);
+	private JTable table;
 
 	public GUI(Controller g) {
 		//Call JFrame Constructor and initialize Attributes
@@ -33,6 +40,7 @@ public class GUI extends JFrame{
 		setMinimumSize(new Dimension(750, 550));
 		controller = g;
 		universe = controller.getUniverse();
+		highscore = controller.getHighscore();
 		
 		//Setup GUI and start fullscreen mode if necessary 
 		setBounds(DIMENSIONS);
@@ -79,6 +87,22 @@ public class GUI extends JFrame{
 		universe.setVisible(true);
 		mainMenu.setVisible(false);
 	}
+	
+	public Object[][] createHighscoreTableContent() {
+		Object[][] return_object = new Object[highscore.TOP_NUMBER][4];
+		highscore.load();
+		highscore.sort(1, true);
+		LinkedList<String[]> highscoreList = highscore.getHighscoreList();
+		int i = 1;
+		for (String[] stringArray : highscoreList) {
+			return_object[highscoreList.indexOf(stringArray)][0] = i + "";
+			return_object[highscoreList.indexOf(stringArray)][1] = stringArray[0];
+			return_object[highscoreList.indexOf(stringArray)][2] = stringArray[1];
+			return_object[highscoreList.indexOf(stringArray)][3] = stringArray[2];
+			i++;
+		}
+		return return_object;
+	}
 
 	//Initialize the contents of the frame.
 	private void initialize() {
@@ -100,10 +124,54 @@ public class GUI extends JFrame{
 		highscore.setLayout(new BoxLayout(highscore, BoxLayout.Y_AXIS));
 		
 		Box verticalBox_1 = Box.createVerticalBox();
+		verticalBox_1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		highscore.add(verticalBox_1);
 		
 		Component verticalGlue_4 = Box.createVerticalGlue();
 		verticalBox_1.add(verticalGlue_4);
+		
+		JLabel lblNewLabel = new JLabel("Highscores");
+		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblNewLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.setFont(new Font("Narkisim", Font.BOLD, 40));
+		verticalBox_1.add(lblNewLabel);
+		
+		Component verticalStrut_7 = Box.createVerticalStrut(20);
+		verticalBox_1.add(verticalStrut_7);
+		
+		Box horizontalBox_1 = Box.createHorizontalBox();
+		verticalBox_1.add(horizontalBox_1);
+		
+		Component horizontalStrut_2 = Box.createHorizontalStrut(20);
+		horizontalStrut_2.setPreferredSize(new Dimension(300, 1));
+		horizontalBox_1.add(horizontalStrut_2);
+		
+		table = new JTable();
+		horizontalBox_1.add(new JScrollPane(table));
+		table.setModel(new DefaultTableModel(
+				createHighscoreTableContent(), 
+				new String[] {"TOP", "Name", "Score", "Playtime"}
+			) {
+				boolean[] columnEditables = new boolean[] {false, false, false, false};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			});
+			table.getColumnModel().getColumn(0).setResizable(false);
+			table.getColumnModel().getColumn(0).setPreferredWidth(30);
+			table.getColumnModel().getColumn(1).setResizable(false);
+			table.getColumnModel().getColumn(1).setPreferredWidth(200);
+			table.getColumnModel().getColumn(2).setResizable(false);
+			table.getColumnModel().getColumn(3).setResizable(false);
+		
+		Component horizontalStrut_3 = Box.createHorizontalStrut(20);
+		horizontalStrut_3.setPreferredSize(new Dimension(300, 1));
+		horizontalBox_1.add(horizontalStrut_3);
+		
+		Component verticalGlue_5 = Box.createVerticalGlue();
+		highscore.add(verticalGlue_5);
 		
 		Box horizontalBox_2 = Box.createHorizontalBox();
 		highscore.add(horizontalBox_2);
@@ -114,6 +182,7 @@ public class GUI extends JFrame{
 		horizontalBox_2.add(horizontalStrut_1);
 		
 		JButton button = new JButton("Back");
+		button.setHorizontalAlignment(SwingConstants.LEFT);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				highscore.setVisible(false);
@@ -125,7 +194,6 @@ public class GUI extends JFrame{
 		button.setMinimumSize(new Dimension(137, 45));
 		button.setMaximumSize(new Dimension(150, 45));
 		button.setIconTextGap(10);
-		button.setHorizontalAlignment(SwingConstants.LEFT);
 		button.setFont(new Font("SansSerif", Font.BOLD, 15));
 		button.setAlignmentX(0.5f);
 		horizontalBox_2.add(button);

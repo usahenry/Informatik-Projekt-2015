@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 //A new instance of this is created for every new game started
@@ -134,12 +135,10 @@ public class Game {
 	}
 	
 	public void gameOver() {
-		Object[] options = {"Main Menu", "Restart"};
 		stop();
-		int result = JOptionPane.showOptionDialog(controller.getGui(), "GAME OVER!", "Game over", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[1]);
-		if (result == JOptionPane.NO_OPTION) {
-			controller.restartGame();
-		} else controller.stopGame();
+		GameOverDialog dialog = new GameOverDialog(controller, score, playtime);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
 	}
 	
 	public void updateScore() {
