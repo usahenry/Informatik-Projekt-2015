@@ -20,7 +20,7 @@ public class Universe extends JPanelBG {
 	
 	private static final long serialVersionUID = 1L;
 	private Controller controller;
-	private JLabel countdown, score, lives;
+	private JLabel countdown, score, lives, time;
 	private final double GRAVITY = -0.15;
 	private Game game;
 	
@@ -71,11 +71,17 @@ public class Universe extends JPanelBG {
 		lives.setFont(new Font("Narkisim", Font.BOLD, 50));
 		lives.setForeground(Color.WHITE);
 		add(lives);
+		
+		time = new JLabel("Time: 0");
+		time.setFont(new Font("Narkisim", Font.BOLD, 50));
+		time.setForeground(Color.WHITE);
+		add(time);
 	}
 	
 	//Position the lives label at the right position
 	public void postInit() {
 		lives.setBounds(getWidth() - 300, 10, 290, 50);
+		time.setBounds(getWidth() - 300, 70, 290, 50);
 	}
 
 	//Called by game
@@ -91,6 +97,10 @@ public class Universe extends JPanelBG {
 	
 	public void setScore(int s) {
 		score.setText("Score: " + s);
+	}
+	
+	public void setTime(int t) {
+		time.setText("Time: " + t);
 	}
 	
 	public void setLives(int l) {

@@ -11,8 +11,8 @@ import java.util.Random;
 //Template for all other Items
 public abstract class Item {
 
-	public int x, y, speedX, mass;
-	public double speedY;
+	public int x, y, speedX;
+	public double speedY, mass;
 	public Game game;
 	public Universe universe;
 	public boolean wasVisible;
@@ -20,12 +20,6 @@ public abstract class Item {
 	public static final int ItemTypeID = 0; //Used to identify the type of an Item
 	
 	public Item(int x, Game game, Universe universe) {
-		//##### ### ##  ###
-		//  #   # # # # # #  Koordinaten in float
-		//  #   # # # # # #
-		//  #   ### ##  ###
-		//TO-DO: Wahrscheinlichkeit nach links zu fliegen wird größer, je weiter rechts man ist!
-		
 		//Initializing attributes
 		this.x = x;
 		this.game = game;
@@ -34,7 +28,7 @@ public abstract class Item {
 		
 		y = universe.getHeight() + 40;
 		speedX = random.nextInt(5) + 2;
-		if (x > universe.getWidth() / 2) speedX = -speedX;
+		if (changeDirection()) speedX = -speedX;
 		speedY = (random.nextInt(50) / 10) + 10;
 		mass = 1 - random.nextInt(10) / 10;
 		wasVisible = false;
@@ -87,13 +81,23 @@ public abstract class Item {
 		return speedX;
 	}
 	
+	//Choses randomly if the Item will have to change it's direction
+	public boolean changeDirection() {
+		double xMid = universe.getWidth() / 2;
+		double chance = Math.abs((0.5 / ((universe.getWidth() - (game.SPAWN_BORDER * 1.9)) - xMid)) * (x - xMid)) + 0.5; //Chance the Item will fly towards the side it didn't spawn on, 50 % in the middle -> 100 % at 1.9 * SPAWN_BORDER distance from the border
+		chance = Math.round(chance * 100);
+		boolean otherSide = random.nextInt(100) <= chance;
+		boolean onLeftSide = x < universe.getWidth() / 2;
+		
+		if (onLeftSide && !otherSide) return true;
+		else if (!onLeftSide && otherSide) return true;
+		else return false;
+	}
+	
 	//Called by Game if the Item gets hit
 	//Creates and returns 2 ItemParts at the current position
 	public LinkedList<ItemPart> createItemParts() {
-		LinkedList<ItemPart> return_list = new LinkedList<ItemPart>();
-		return_list.add(new ItemPart(x, y, true, game, universe));
-		return_list.add(new ItemPart(x + 25, y, false, game, universe));
-		return return_list;
+		return null;
 	}
 	
 	//Called in every universe.repaint()

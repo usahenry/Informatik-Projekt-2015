@@ -20,7 +20,7 @@ public class Game {
 	private Random random;
 	private Timer timer;
 	private int lives, score, playtime;
-	private final int SPAWN_BORDER = 200; //Items can only spawn SPAWN_BOREDER away from the window border (on the x-Axis) 
+	public final int SPAWN_BORDER = 200; //Items can only spawn SPAWN_BOREDER away from the window border (on the x-Axis) 
 	private final int FRAME_TIME = 10; //Time between each repaint
 
 	public Game(Controller controller) {
@@ -53,6 +53,7 @@ public class Game {
 		universe.postInit();
 		updateLives();
 		updateScore();
+		updateTime();
 		countdown(3);
 		tick(10);
 		randomItemTick(3500); //Starts spawning Items after 3,5, when the countdown finished
@@ -83,6 +84,7 @@ public class Game {
 			@Override
 			public void run() {
 				playtime++;
+				if (playtime % 100 == 0) updateTime();
 				universe.repaint();
 				
 				tick(FRAME_TIME);
@@ -97,8 +99,9 @@ public class Game {
 			public void run() {
 				if (random.nextInt(10) > 1) spawnItemRandom(Fruit.ItemTypeID);
 				else spawnItemRandom(Bomb.ItemTypeID);
-				
-				randomItemTick(random.nextInt(1000) + 500);
+				int bonusTimeToNextTick = Math.round(((-800) / 60) * (playtime / 100)) + 1000;
+				if (bonusTimeToNextTick < 200) bonusTimeToNextTick = 300;
+				randomItemTick(random.nextInt(700) + bonusTimeToNextTick);
 			}
 		}, time);
 	}
@@ -145,11 +148,15 @@ public class Game {
 		universe.setScore(score);
 	}
 	
+	public void updateTime() {
+		universe.setTime(Math.round(playtime / 100));
+	}
+	
 	public void updateLives() {
 		universe.setLives(lives);
-		if (lives == 0) {
-			gameOver();
-		}
+//		if (lives == 0) {
+//			gameOver();
+//		}
 	}
 	
 	public Cursor getCursor() {
