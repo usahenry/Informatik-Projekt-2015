@@ -13,7 +13,7 @@ public class Highscore {
 
 	private File highscoreFile;
 	private LinkedList<String[]> highscoreList;
-	public final int TOP_NUMBER = 20;
+	public final int TOP_NUMBER = 50;
 
 	public Highscore() {
 		// Initialize Attributes

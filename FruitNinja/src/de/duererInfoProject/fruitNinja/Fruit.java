@@ -49,9 +49,9 @@ public class Fruit extends Item {
 		rot += speedX;
 	}
 	
-	public void checkHit(LinkedList<Point> cursorBoints) {
+	public void checkHit(LinkedList<Point> cursorPoints) {
 		Ellipse2D.Double circle = new Ellipse2D.Double(x - (width / 2), y - (height / 2), width, height);
-		for (Point p : cursorBoints) {
+		for (Point p : cursorPoints) {
 			if (circle.contains((Point2D) p)) {
 				game.hit(this);
 				return;

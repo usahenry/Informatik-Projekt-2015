@@ -2,9 +2,14 @@ package de.duererInfoProject.fruitNinja;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -12,17 +17,41 @@ import javax.imageio.ImageIO;
 public class Bomb extends Item {
 
 	public static final int ItemTypeID = 2;
+	private BufferedImage img;
+	private int rot;
+	private int WIDTH = 96, HEIGHT = 124;
 	
 	public Bomb(int x, Game game, Universe universe) {
 		super(x, game, universe);
+
+		try {
+			img = ImageIO.read(new File(Bomb.class.getResource("img/bomb.png").getPath()));
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	//Overrides Items paint method to draw the bomb red
 	public void paint(Graphics2D g2d) {
-		Color c = g2d.getColor();
-		g2d.setColor(Color.RED);
-		g2d.fillOval(x, y, 50, 50);
-		g2d.setColor(c);
+		AffineTransform old = g2d.getTransform();
+		g2d.rotate(Math.toRadians(rot), x, y); // Rotate the Graphics2D Element by rot around (x, y)
+		g2d.drawImage(img, x - (img.getWidth() / 2), y - (img.getHeight() /2), null); //Draw the Image with the center at (x, y)
+		g2d.setTransform(old); // Reset rotation
+	}
+	
+	public void move() {
+		super.move();
+		rot += speedX;
+	}
+	
+	public void checkHit(LinkedList<Point> cursorPoints) {
+		Ellipse2D.Double circle = new Ellipse2D.Double(x - (WIDTH / 2), y - (HEIGHT / 2), WIDTH, HEIGHT);
+		for (Point p : cursorPoints) {
+			if (circle.contains((Point2D) p)) {
+				game.hit(this);
+				return;
+			}
+		}
 	}
 	
 	public int getItemTypeID() {

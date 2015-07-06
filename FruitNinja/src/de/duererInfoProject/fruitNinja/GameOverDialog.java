@@ -40,7 +40,7 @@ public class GameOverDialog extends JDialog {
 		this.playtime = playtime;
 		controller.setLookAndFeel();
 		setResizable(false);
-		setBounds(100, 100, 577, 610);
+		setBounds(170, 170, 577, 610);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

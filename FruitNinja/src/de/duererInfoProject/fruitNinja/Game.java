@@ -154,9 +154,9 @@ public class Game {
 	
 	public void updateLives() {
 		universe.setLives(lives);
-//		if (lives == 0) {
-//			gameOver();
-//		}
+		if (lives == 0) {
+			gameOver();
+		}
 	}
 	
 	public Cursor getCursor() {

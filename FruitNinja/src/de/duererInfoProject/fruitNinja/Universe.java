@@ -1,13 +1,11 @@
 package de.duererInfoProject.fruitNinja;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LayoutManager;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -22,12 +20,13 @@ public class Universe extends JPanelBG {
 	private Controller controller;
 	private JLabel countdown, score, lives, time;
 	private final double GRAVITY = -0.15;
+	private Toolkit toolkit = Toolkit.getDefaultToolkit();
 	private Game game;
 	
 	public Universe (Controller g, String img) {
 		super(img);
 		controller = g;
-
+		
 		//Initializing the GUI
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.addMouseListener(new MouseAdapter() {
@@ -36,6 +35,8 @@ public class Universe extends JPanelBG {
 				controller.stopGame();
 			}
 		});
+		updateCursor();
+		
 		lblNewLabel.setIcon(new ImageIcon(Universe.class.getResource("/de/duererInfoProject/fruitNinja/img/pause-icon.png")));
 		lblNewLabel.setBounds(10, 11, 48, 48);
 		add(lblNewLabel);
@@ -82,6 +83,7 @@ public class Universe extends JPanelBG {
 	public void postInit() {
 		lives.setBounds(getWidth() - 300, 10, 290, 50);
 		time.setBounds(getWidth() - 300, 70, 290, 50);
+		updateCursor();
 	}
 
 	//Called by game
@@ -93,6 +95,14 @@ public class Universe extends JPanelBG {
 		} else {
 			countdown.setText("");
 		}
+	}
+	
+	public void updateCursor() {
+		int cursorNumber = controller.getPreferences().getInt("cursor", 0);
+		java.awt.Cursor cursor = java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.DEFAULT_CURSOR);
+		if (cursorNumber == 3) cursor = toolkit.createCustomCursor(toolkit.getImage(GUI.class.getResource("img/cursor" + cursorNumber + ".png")), new Point(1, 1), "cursor" + cursorNumber);
+		else if (cursorNumber == 2 || cursorNumber == 1) cursor = toolkit.createCustomCursor(toolkit.getImage(GUI.class.getResource("img/cursor" + cursorNumber + ".png")), new Point(16, 16), "cursor" + cursorNumber);
+		setCursor(cursor);
 	}
 	
 	public void setScore(int s) {

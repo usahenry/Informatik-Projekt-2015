@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
+
 //Manages the GUI
 public class GUI extends JFrame{
 
@@ -254,28 +255,30 @@ public class GUI extends JFrame{
 		btnHand.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnHand.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Boolean rightHand = controller.getPreferences().getBoolean("hand", true);
-				if (rightHand) {
-					controller.getPreferences().putBoolean("hand", false);
-					btnHand.setText("Left Hand");
-					btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/left-hand-icon.png")));
-				} else {
-					controller.getPreferences().putBoolean("hand", true);
-					btnHand.setText("Right Hand");
-					btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/right-hand-icon.png")));
-				}
+				int cursor = controller.getPreferences().getInt("cursor", 0);
+				if (cursor == 3) cursor = 0;
+				else cursor++;
+				controller.getPreferences().putInt("cursor", cursor);
+				btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/cursor" + cursor + ".png")));
+				
+				if (cursor == 0) btnHand.setText("Windows Cursor");
+				else if (cursor == 1) btnHand.setText("Ninja Cursor");
+				else if (cursor == 2) btnHand.setText("Red Cursor");
+				else if (cursor == 3) btnHand.setText("No Cursor");
 			}
 		});
-		btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/right-hand-icon.png")));
 		btnHand.setIconTextGap(10);
 		btnHand.setFont(new Font("SansSerif", Font.BOLD, 15));
+
+		int cursor = controller.getPreferences().getInt("cursor", 0);
+		btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/cursor" + cursor + ".png")));
+		if (cursor == 0) btnHand.setText("Windows Cursor");
+		else if (cursor == 1) btnHand.setText("Ninja Cursor");
+		else if (cursor == 2) btnHand.setText("Red Cursor");
+		else if (cursor == 3) btnHand.setText("No Cursor");
 		
 		Component verticalGlue_2 = Box.createVerticalGlue();
 		verticalBox.add(verticalGlue_2);
-		if (!controller.getPreferences().getBoolean("hand", true)) {
-			btnHand.setText("Left Hand");
-			btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/left-hand-icon.png")));
-		}
 		
 		Box horizontalBox = Box.createHorizontalBox();
 		settings.add(horizontalBox);
