@@ -3,12 +3,11 @@ package de.duererInfoProject.fruitNinja;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-//Parts of an Item, flying down
+//Parts of an Item flying away when it got hit
 public class ItemPart extends Item {
 	
 	public static final int ItemTypeID = 3;
@@ -16,17 +15,25 @@ public class ItemPart extends Item {
 	private int rot;
 	
 	public ItemPart(int x, int y, boolean leftSide, Game game, Universe universe, int imgNumber, int rot) {
-		//Calling Items alternate constructor
-		super(x, y, leftSide, game, universe);
+		//Calling Item's alternative constructor
+		super(x, y, leftSide, game, universe, rot);
+		
+		//Initializing attributes
 		this.rot = rot;
 		String side = "_right.png";
 		if (leftSide) side = "_left.png";
 
+		//Loading image
 		try {
-			img = ImageIO.read(new File(Fruit.class.getResource("img/fruit_" + imgNumber + side).getPath()));
+			img = ImageIO.read(Fruit.class.getResource("img/fruit_" + imgNumber + side));
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			game.getController().errorMessage(e, "Error while loading fruit part image!");
 		}
+	}
+	
+	//Alternate cunstructor for ItemExplosions
+	public ItemPart(Game game, Universe universe) {
+		super(0, 0, false, game, universe, 0);
 	}
 	
 	//Called in every universe.repaint()
@@ -41,9 +48,9 @@ public class ItemPart extends Item {
 	//Called in every universe.repaint()
 	//Moves the ItemPart
 	public void move() {
-		speedY += (universe.getGravity() * mass);
+		speedY -= (universe.getGravity() * mass);
 		x += speedX;
-		y -= Math.round(speedY);
+		y += Math.round(speedY);
 		if (!onScreen()) {
 			game.itemPartOutOfScreen(this);
 		}

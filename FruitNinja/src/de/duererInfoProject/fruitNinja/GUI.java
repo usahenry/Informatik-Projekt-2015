@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedList;
 
 import javax.swing.Box;
@@ -16,58 +18,65 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-
 //Manages the GUI
-public class GUI extends JFrame{
+public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private Controller controller;
 	private Highscore highscore;
-	private JPanel settings, mainMenu;
+	private JPanel settingsPanel, mainMenuPanel, highscorePanel;
 	private Universe universe;
+	private SoundManager soundManager;
 	private boolean fullscreen;
 	private Rectangle DIMENSIONS = new Rectangle(100, 100, 1280, 800);
 	private JTable table;
 
 	public GUI(Controller g) {
-		//Call JFrame Constructor and initialize Attributes
+		// Call JFrames Constructor and initialize Attributes
 		super();
 		setMinimumSize(new Dimension(750, 550));
 		controller = g;
 		universe = controller.getUniverse();
 		highscore = controller.getHighscore();
-		
-		//Setup GUI and start fullscreen mode if necessary 
+		soundManager = controller.getSoundManager();
+
+		// Setup GUI and start fullscreen mode if necessary
 		setBounds(DIMENSIONS);
-		boolean startFullscreen = controller.getPreferences().getBoolean("fullscreen", false);
-		if (startFullscreen) startFullscreen();
+		boolean startFullscreen = controller.getPreferences().getBoolean(
+				"fullscreen", false);
+		if (startFullscreen)
+			startFullscreen();
 		fullscreen = startFullscreen;
-		
+
 		controller.setLookAndFeel();
 		initialize();
 		setVisible(true);
 	}
-	
-	//Starts fullscreen mode
+
+	// Starts fullscreen mode
 	public void startFullscreen() {
-		if (fullscreen) return;
+		if (fullscreen)
+			return;
 		fullscreen = true;
 		dispose();
 		setUndecorated(true);
-		setBounds(0, 0, getToolkit().getScreenSize().width, getToolkit().getScreenSize().height);
+		setBounds(0, 0, getToolkit().getScreenSize().width, getToolkit()
+				.getScreenSize().height);
 		setResizable(false);
 		setVisible(true);
 	}
 
-	//Stops fullscreen mode
+	// Stops fullscreen mode
 	public void stopFullscreen() {
-		if (!fullscreen) return;
+		if (!fullscreen)
+			return;
 		fullscreen = false;
 		dispose();
 		setUndecorated(false);
@@ -76,19 +85,33 @@ public class GUI extends JFrame{
 		setVisible(true);
 	}
 	
-	//Called when the game gets stopped
-	//Shows the main menu
-	public void backToMenu() {
-		settings.setVisible(false);
-		universe.setVisible(false);
-		mainMenu.setVisible(true);
+	//Display an error dialog with @message and an option to show more details
+	public void errorMessage(Exception e, String message) {
+		Object[] options = {"More Details", "OK"};
+		int result = JOptionPane.showOptionDialog(this, message, "An Error has occured!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[1]);
+		if (result == JOptionPane.YES_OPTION) {
+			PrintWriter printWriter = new PrintWriter(new StringWriter());
+			e.printStackTrace(printWriter);
+			JOptionPane.showMessageDialog(this, printWriter.toString(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
+		}
 	}
-	
+
+	// Shows the main menu
+	public void backToMenu() {
+		settingsPanel.setVisible(false);
+		universe.setVisible(false);
+		highscorePanel.setVisible(false);
+		mainMenuPanel.setVisible(true);
+	}
+
+	//Called when a new game starts
+	//Shows the universe
 	public void showUniverse() {
 		universe.setVisible(true);
-		mainMenu.setVisible(false);
+		mainMenuPanel.setVisible(false);
 	}
-	
+
+	//Loads the highscore, sorts it and converts it into an array, used to display it in the highscore table
 	public Object[][] createHighscoreTableContent() {
 		Object[][] return_object = new Object[highscore.TOP_NUMBER][4];
 		highscore.load();
@@ -105,32 +128,33 @@ public class GUI extends JFrame{
 		return return_object;
 	}
 
-	//Initialize the contents of the frame.
+	// Initialize the contents of the frame.
+	@SuppressWarnings("serial")
 	private void initialize() {
 		setTitle("Fruit Ninja!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout(0, 0));
-		
-		mainMenu = new JPanelBG(GUI.class.getResource("img/background.jpg").getPath());
-		getContentPane().add(mainMenu, "name_259883664488859");
-		mainMenu.setVisible(true);
-		
-		settings = new JPanelBG(GUI.class.getResource("img/background.jpg").getPath());
-		getContentPane().add(settings, "name_259887979946234");
-		settings.setVisible(false);
-		settings.setLayout(new BoxLayout(settings, BoxLayout.Y_AXIS));
-		
-		JPanel highscore = new JPanelBG(GUI.class.getResource("img/background.jpg").getPath());
-		getContentPane().add(highscore, "name_328767235184261");
-		highscore.setLayout(new BoxLayout(highscore, BoxLayout.Y_AXIS));
-		
+
+		mainMenuPanel = new JPanelBG("img/background.jpg");
+		getContentPane().add(mainMenuPanel, "name_259883664488859");
+		mainMenuPanel.setVisible(true);
+
+		settingsPanel = new JPanelBG("img/background.jpg");
+		getContentPane().add(settingsPanel, "name_259887979946234");
+		settingsPanel.setVisible(false);
+		settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
+
+		highscorePanel = new JPanelBG("img/background.jpg");
+		getContentPane().add(highscorePanel, "name_328767235184261");
+		highscorePanel.setLayout(new BoxLayout(highscorePanel, BoxLayout.Y_AXIS));
+
 		Box verticalBox_1 = Box.createVerticalBox();
 		verticalBox_1.setAlignmentX(Component.CENTER_ALIGNMENT);
-		highscore.add(verticalBox_1);
-		
+		highscorePanel.add(verticalBox_1);
+
 		Component verticalGlue_4 = Box.createVerticalGlue();
 		verticalBox_1.add(verticalGlue_4);
-		
+
 		JLabel lblNewLabel = new JLabel("Highscores");
 		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblNewLabel.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -138,59 +162,61 @@ public class GUI extends JFrame{
 		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setFont(new Font("Narkisim", Font.BOLD, 40));
 		verticalBox_1.add(lblNewLabel);
-		
+
 		Component verticalStrut_7 = Box.createVerticalStrut(20);
 		verticalBox_1.add(verticalStrut_7);
-		
+
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox_1.add(horizontalBox_1);
-		
+
 		Component horizontalStrut_2 = Box.createHorizontalStrut(20);
 		horizontalStrut_2.setPreferredSize(new Dimension(300, 1));
 		horizontalBox_1.add(horizontalStrut_2);
-		
+
 		table = new JTable();
 		horizontalBox_1.add(new JScrollPane(table));
-		table.setModel(new DefaultTableModel(
-				createHighscoreTableContent(), 
-				new String[] {"TOP", "Name", "Score", "Playtime"}
-			) {
-				boolean[] columnEditables = new boolean[] {false, false, false, false};
-				public boolean isCellEditable(int row, int column) {
-					return columnEditables[column];
-				}
-			});
-			table.getColumnModel().getColumn(0).setResizable(false);
-			table.getColumnModel().getColumn(0).setPreferredWidth(30);
-			table.getColumnModel().getColumn(1).setResizable(false);
-			table.getColumnModel().getColumn(1).setPreferredWidth(200);
-			table.getColumnModel().getColumn(2).setResizable(false);
-			table.getColumnModel().getColumn(3).setResizable(false);
-		
+		table.setModel(new DefaultTableModel(createHighscoreTableContent(),
+				new String[] { "TOP", "Name", "Score", "Playtime" }) {
+			boolean[] columnEditables = new boolean[] { false, false, false,
+					false };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(30);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(3).setResizable(false);
+
 		Component horizontalStrut_3 = Box.createHorizontalStrut(20);
 		horizontalStrut_3.setPreferredSize(new Dimension(300, 1));
 		horizontalBox_1.add(horizontalStrut_3);
-		
+
 		Component verticalGlue_5 = Box.createVerticalGlue();
-		highscore.add(verticalGlue_5);
-		
+		highscorePanel.add(verticalGlue_5);
+
 		Box horizontalBox_2 = Box.createHorizontalBox();
-		highscore.add(horizontalBox_2);
-		
+		highscorePanel.add(horizontalBox_2);
+
 		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
 		horizontalStrut_1.setPreferredSize(new Dimension(10, 0));
 		horizontalStrut_1.setMaximumSize(new Dimension(20, 0));
 		horizontalBox_2.add(horizontalStrut_1);
-		
+
 		JButton button = new JButton("Back");
 		button.setHorizontalAlignment(SwingConstants.LEFT);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				highscore.setVisible(false);
-				mainMenu.setVisible(true);
+				soundManager.playButton(true);
+				backToMenu();
 			}
 		});
-		button.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/back-icon.png")));
+		button.setIcon(new ImageIcon(
+				GUI.class
+						.getResource("/de/duererInfoProject/fruitNinja/img/back-icon.png")));
 		button.setPreferredSize(new Dimension(150, 45));
 		button.setMinimumSize(new Dimension(137, 45));
 		button.setMaximumSize(new Dimension(150, 45));
@@ -198,35 +224,37 @@ public class GUI extends JFrame{
 		button.setFont(new Font("SansSerif", Font.BOLD, 15));
 		button.setAlignmentX(0.5f);
 		horizontalBox_2.add(button);
-		
+
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
 		horizontalBox_2.add(horizontalGlue_1);
-		
+
 		Component verticalStrut_6 = Box.createVerticalStrut(20);
 		verticalStrut_6.setPreferredSize(new Dimension(0, 10));
 		verticalStrut_6.setMinimumSize(new Dimension(0, 10));
-		highscore.add(verticalStrut_6);
-		settings.setVisible(false);
-		
+		highscorePanel.add(verticalStrut_6);
+		settingsPanel.setVisible(false);
+
 		getContentPane().add(universe);
 		universe.setLayout(null);
 		universe.setVisible(false);
-		
+
 		Box verticalBox = Box.createVerticalBox();
 		verticalBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-		settings.add(verticalBox);
-		
+		settingsPanel.add(verticalBox);
+
 		Component verticalGlue_1 = Box.createVerticalGlue();
 		verticalBox.add(verticalGlue_1);
-		
+
 		JButton btnFullscreen = new JButton("Window Mode");
 		btnFullscreen.setMaximumSize(new Dimension(200, 50));
 		btnFullscreen.setPreferredSize(new Dimension(200, 50));
-		if (controller.getPreferences().getBoolean("fullscreen", false)) btnFullscreen.setText("Fullscreen Mode");
+		if (controller.getPreferences().getBoolean("fullscreen", false))
+			btnFullscreen.setText("Fullscreen Mode");
 		btnFullscreen.setAlignmentX(Component.CENTER_ALIGNMENT);
 		verticalBox.add(btnFullscreen);
 		btnFullscreen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				soundManager.playButton(false);
 				if (controller.getPreferences().getBoolean("fullscreen", false)) {
 					controller.getPreferences().putBoolean("fullscreen", false);
 					btnFullscreen.setText("Window Mode");
@@ -240,13 +268,16 @@ public class GUI extends JFrame{
 		});
 		btnFullscreen.setHorizontalAlignment(SwingConstants.LEFT);
 		btnFullscreen.setFont(new Font("SansSerif", Font.BOLD, 15));
-		btnFullscreen.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/fullscreen-icon.png")));
+		btnFullscreen
+				.setIcon(new ImageIcon(
+						GUI.class
+								.getResource("/de/duererInfoProject/fruitNinja/img/fullscreen-icon.png")));
 		btnFullscreen.setIconTextGap(10);
-		
+
 		Component verticalStrut = Box.createVerticalStrut(20);
 		verticalStrut.setPreferredSize(new Dimension(0, 40));
 		verticalBox.add(verticalStrut);
-		
+
 		JButton btnHand = new JButton("Right Hand");
 		btnHand.setPreferredSize(new Dimension(200, 50));
 		btnHand.setMaximumSize(new Dimension(200, 50));
@@ -255,39 +286,55 @@ public class GUI extends JFrame{
 		btnHand.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnHand.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				soundManager.playButton(false);
 				int cursor = controller.getPreferences().getInt("cursor", 0);
-				if (cursor == 3) cursor = 0;
-				else cursor++;
+				if (cursor == 3)
+					cursor = 0;
+				else
+					cursor++;
 				controller.getPreferences().putInt("cursor", cursor);
-				btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/cursor" + cursor + ".png")));
-				
-				if (cursor == 0) btnHand.setText("Windows Cursor");
-				else if (cursor == 1) btnHand.setText("Ninja Cursor");
-				else if (cursor == 2) btnHand.setText("Red Cursor");
-				else if (cursor == 3) btnHand.setText("No Cursor");
+				btnHand.setIcon(new ImageIcon(
+						GUI.class
+								.getResource("/de/duererInfoProject/fruitNinja/img/cursor"
+										+ cursor + ".png")));
+
+				if (cursor == 0)
+					btnHand.setText("Windows Cursor");
+				else if (cursor == 1)
+					btnHand.setText("Ninja Cursor");
+				else if (cursor == 2)
+					btnHand.setText("Red Cursor");
+				else if (cursor == 3)
+					btnHand.setText("No Cursor");
 			}
 		});
 		btnHand.setIconTextGap(10);
 		btnHand.setFont(new Font("SansSerif", Font.BOLD, 15));
 
 		int cursor = controller.getPreferences().getInt("cursor", 0);
-		btnHand.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/cursor" + cursor + ".png")));
-		if (cursor == 0) btnHand.setText("Windows Cursor");
-		else if (cursor == 1) btnHand.setText("Ninja Cursor");
-		else if (cursor == 2) btnHand.setText("Red Cursor");
-		else if (cursor == 3) btnHand.setText("No Cursor");
-		
+		btnHand.setIcon(new ImageIcon(GUI.class
+				.getResource("/de/duererInfoProject/fruitNinja/img/cursor"
+						+ cursor + ".png")));
+		if (cursor == 0)
+			btnHand.setText("Windows Cursor");
+		else if (cursor == 1)
+			btnHand.setText("Ninja Cursor");
+		else if (cursor == 2)
+			btnHand.setText("Red Cursor");
+		else if (cursor == 3)
+			btnHand.setText("No Cursor");
+
 		Component verticalGlue_2 = Box.createVerticalGlue();
 		verticalBox.add(verticalGlue_2);
-		
+
 		Box horizontalBox = Box.createHorizontalBox();
-		settings.add(horizontalBox);
-		
+		settingsPanel.add(horizontalBox);
+
 		Component horizontalStrut = Box.createHorizontalStrut(20);
 		horizontalStrut.setMaximumSize(new Dimension(20, 0));
 		horizontalStrut.setPreferredSize(new Dimension(10, 0));
 		horizontalBox.add(horizontalStrut);
-		
+
 		JButton btnBack = new JButton("Back");
 		btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnBack.setPreferredSize(new Dimension(150, 45));
@@ -296,102 +343,122 @@ public class GUI extends JFrame{
 		horizontalBox.add(btnBack);
 		btnBack.setIconTextGap(10);
 		btnBack.setHorizontalAlignment(SwingConstants.LEFT);
-		btnBack.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/back-icon.png")));
+		btnBack.setIcon(new ImageIcon(
+				GUI.class
+						.getResource("/de/duererInfoProject/fruitNinja/img/back-icon.png")));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				soundManager.playButton(true);
 				backToMenu();
 			}
 		});
 		btnBack.setFont(new Font("SansSerif", Font.BOLD, 15));
-		
+
 		Component horizontalGlue = Box.createHorizontalGlue();
 		horizontalBox.add(horizontalGlue);
-		
+
 		Component verticalStrut_4 = Box.createVerticalStrut(20);
 		verticalStrut_4.setPreferredSize(new Dimension(0, 10));
 		verticalStrut_4.setMinimumSize(new Dimension(0, 10));
-		settings.add(verticalStrut_4);
-		mainMenu.setLayout(new BoxLayout(mainMenu, BoxLayout.Y_AXIS));
-		
+		settingsPanel.add(verticalStrut_4);
+		mainMenuPanel.setLayout(new BoxLayout(mainMenuPanel, BoxLayout.Y_AXIS));
+
 		Component verticalStrut_3 = Box.createVerticalStrut(20);
-		mainMenu.add(verticalStrut_3);
-		
+		mainMenuPanel.add(verticalStrut_3);
+
 		JLabel label = new JLabel("");
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
-		mainMenu.add(label);
-		label.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/logo.png")));
-		
+		mainMenuPanel.add(label);
+		label.setIcon(new ImageIcon(GUI.class
+				.getResource("/de/duererInfoProject/fruitNinja/img/logo.png")));
+
 		JButton btnPlay = new JButton("Play");
 		btnPlay.setMaximumSize(new Dimension(150, 45));
 		btnPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnPlay.setHorizontalAlignment(SwingConstants.LEFT);
 		btnPlay.setIconTextGap(10);
-		btnPlay.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/play-icon.png")));
+		btnPlay.setIcon(new ImageIcon(
+				GUI.class
+						.getResource("/de/duererInfoProject/fruitNinja/img/play-icon.png")));
 		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 15));
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				soundManager.playButton(false);
 				controller.newGame();
 			}
 		});
-		
+
 		Component verticalGlue_3 = Box.createVerticalGlue();
-		mainMenu.add(verticalGlue_3);
-		mainMenu.add(btnPlay);
-		
+		mainMenuPanel.add(verticalGlue_3);
+		mainMenuPanel.add(btnPlay);
+
 		JButton btnSettings = new JButton("Settings");
 		btnSettings.setMaximumSize(new Dimension(150, 45));
 		btnSettings.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnSettings.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/settings-icon.png")));
+		btnSettings
+				.setIcon(new ImageIcon(
+						GUI.class
+								.getResource("/de/duererInfoProject/fruitNinja/img/settings-icon.png")));
 		btnSettings.setHorizontalAlignment(SwingConstants.LEFT);
 		btnSettings.setIconTextGap(10);
 		btnSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				settings.setVisible(true);
-				mainMenu.setVisible(false);
+				soundManager.playButton(false);
+				settingsPanel.setVisible(true);
+				mainMenuPanel.setVisible(false);
 			}
 		});
-		
+
 		Component verticalStrut_5 = Box.createVerticalStrut(20);
-		mainMenu.add(verticalStrut_5);
-		
+		mainMenuPanel.add(verticalStrut_5);
+
 		JButton btnHighscore = new JButton("Highscore");
 		btnHighscore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				highscore.setVisible(true);
-				mainMenu.setVisible(false);
+				soundManager.playButton(false);
+				highscorePanel.setVisible(true);
+				mainMenuPanel.setVisible(false);
 			}
 		});
-		btnHighscore.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/highscore-icon.png")));
+		btnHighscore
+				.setIcon(new ImageIcon(
+						GUI.class
+								.getResource("/de/duererInfoProject/fruitNinja/img/highscore-icon.png")));
 		btnHighscore.setMaximumSize(new Dimension(150, 45));
 		btnHighscore.setIconTextGap(10);
 		btnHighscore.setHorizontalAlignment(SwingConstants.LEFT);
 		btnHighscore.setFont(new Font("SansSerif", Font.BOLD, 15));
 		btnHighscore.setAlignmentX(0.5f);
-		mainMenu.add(btnHighscore);
-		
+		mainMenuPanel.add(btnHighscore);
+
 		Component verticalStrut_1 = Box.createVerticalStrut(20);
-		mainMenu.add(verticalStrut_1);
+		mainMenuPanel.add(verticalStrut_1);
 		btnSettings.setFont(new Font("SansSerif", Font.BOLD, 15));
-		mainMenu.add(btnSettings);
-		
+		mainMenuPanel.add(btnSettings);
+
 		JButton btnExit = new JButton("Exit");
 		btnExit.setMaximumSize(new Dimension(150, 45));
 		btnExit.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnExit.setHorizontalAlignment(SwingConstants.LEFT);
 		btnExit.setIconTextGap(10);
-		btnExit.setIcon(new ImageIcon(GUI.class.getResource("/de/duererInfoProject/fruitNinja/img/stop-icon.png")));
+		btnExit.setIcon(new ImageIcon(
+				GUI.class
+						.getResource("/de/duererInfoProject/fruitNinja/img/exit-icon.png")));
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				soundManager.playButton(false);
 				dispose();
 			}
 		});
-		
+
 		Component verticalStrut_2 = Box.createVerticalStrut(20);
-		mainMenu.add(verticalStrut_2);
+		mainMenuPanel.add(verticalStrut_2);
 		btnExit.setFont(new Font("SansSerif", Font.BOLD, 15));
-		mainMenu.add(btnExit);
-		
+		mainMenuPanel.add(btnExit);
+
 		Component verticalGlue = Box.createVerticalGlue();
-		mainMenu.add(verticalGlue);
+		mainMenuPanel.add(verticalGlue);
+
+		controller.getSoundManager().playBackground();
 	}
 }

@@ -1,16 +1,13 @@
 package de.duererInfoProject.fruitNinja;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -25,9 +22,9 @@ public class Bomb extends Item {
 		super(x, game, universe);
 
 		try {
-			img = ImageIO.read(new File(Bomb.class.getResource("img/bomb.png").getPath()));
+			img = ImageIO.read(Bomb.class.getResource("img/bomb.png"));
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			game.getController().errorMessage(e, "Error while loading bomb image!");
 		}
 	}
 	
@@ -52,6 +49,12 @@ public class Bomb extends Item {
 				return;
 			}
 		}
+	}
+	
+	public LinkedList<ItemPart> createItemParts() {
+		LinkedList<ItemPart> return_list =  new LinkedList<ItemPart>();
+		return_list.add(new ItemExplosion(game, universe));
+		return return_list;
 	}
 	
 	public int getItemTypeID() {

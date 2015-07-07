@@ -23,10 +23,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+//Shows the reached score and the highscore table and allows you to add your score if it is good enough
 public class GameOverDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private Controller controller;
 	private Highscore highscore;
 	private int score, playtime;
 	private JTextField input_name;
@@ -34,18 +35,19 @@ public class GameOverDialog extends JDialog {
 	private JPanel panel_highscore;
 
 	public GameOverDialog(Controller controller, int score, int playtime) {
-		this.controller = controller;
+		//Initialize attributes
 		highscore = controller.getHighscore();
 		this.score = score;
 		this.playtime = playtime;
 		controller.setLookAndFeel();
 		setResizable(false);
-		setBounds(170, 170, 577, 610);
+		setBounds(350, 250, 577, 610);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
+		//Setup GUI
 		JLabel lblGameOver = new JLabel("GAME OVER!");
 		lblGameOver.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblGameOver.setHorizontalAlignment(SwingConstants.CENTER);
@@ -124,6 +126,7 @@ public class GameOverDialog extends JDialog {
 		panel_highscore.setVisible(highscore.isHighscore(score));
 	}
 	
+	//Add score to the highscore table
 	public void addHighscore() {
 		highscore.load();
 		
@@ -133,6 +136,8 @@ public class GameOverDialog extends JDialog {
 		panel_highscore.setVisible(false);
 	}
 	
+	//Sets the table model of the highscore table
+	@SuppressWarnings("serial")
 	public void setTableModel() {
 		table.setModel(new DefaultTableModel(
 				createTableContent(), 
@@ -151,6 +156,7 @@ public class GameOverDialog extends JDialog {
 			table.getColumnModel().getColumn(3).setResizable(false);
 	}
 	
+	//Loads the highscore, sorts it and converts it into an array, used to display it in the highscore table
 	public Object[][] createTableContent() {
 		Object[][] return_object = new Object[highscore.TOP_NUMBER][4];
 		highscore.load();

@@ -13,26 +13,26 @@ public class Highscore {
 
 	private File highscoreFile;
 	private LinkedList<String[]> highscoreList;
-	public final int TOP_NUMBER = 50;
+	public final int TOP_NUMBER = 50; //Number of shown and saved highscore entrys
+	private Controller controller;
 
-	public Highscore() {
+	public Highscore(Controller controller) {
 		// Initialize Attributes
-		highscoreFile = new File("C://Users//"
-				+ System.getProperty("user.name")
-				+ "//Documents//FruitNinjaHighscore.txt");
+		this.controller = controller;
+		highscoreFile = new File("C://Users//" + System.getProperty("user.name") + "//Documents//FruitNinjaHighscore.txt");
 		if (!highscoreFile.isFile()) {
 			try {
 				highscoreFile.getParentFile().mkdirs();
 				highscoreFile.createNewFile();
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				controller.errorMessage(e, "Error while creating highscore file!");
 			}
 		}
 
 		highscoreList = new LinkedList<String[]>();
 	}
 
-	// Save to HighscoreFile
+	// Save highscoreList to HighscoreFile
 	public void save() {
 		if (highscoreList == null) return;
 		
@@ -47,11 +47,11 @@ public class Highscore {
 			}
 			writer.close();
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			controller.errorMessage(e, "Error while saving highscore!");
 		}
 	}
 
-	// Load from HighscoreFile
+	// Load highscoreList from HighscoreFile
 	public void load() {
 		if (highscoreList == null) return;
 		
@@ -67,16 +67,18 @@ public class Highscore {
 			
 			shortenHighscoreList(TOP_NUMBER);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			controller.errorMessage(e, "Error while loading highscore!");
 		}
 	}
 	
+	//Adds @highscore to the highscoreList and removes the worst entry if necessary
 	public void newHighscore(String[] highscore) {
 		shortenHighscoreList(TOP_NUMBER - 1);
 		highscoreList.add(highscore);
 		sort(1, true);
 	}
 	
+	//Shortens the highscore to @number entrys
 	public void shortenHighscoreList(int number) {
 		sort(1, true);
 		while (highscoreList.size() > number) {
@@ -84,6 +86,7 @@ public class Highscore {
 		}
 	}
 	
+	//Checks if @score is good enough to be in the highscoreList
 	public boolean isHighscore(int score) {
 		sort(1, true);
 		if (highscoreList.size() < TOP_NUMBER) return true;

@@ -9,18 +9,16 @@ import java.util.LinkedList;
 //Manages the mouse/hand position and the line following it 
 public class Cursor {
 	
-	private Game game;
 	private Universe universe;
 	private LinkedList<Point> lastPoints;
 	private final int LAST_POINTS_NUMBER = 7;
 	
 	
-	public Cursor(Game game, Universe universe) {
+	public Cursor(Universe universe) {
 		//Getting and initilaizing attributes
-		this.game = game;
 		this.universe = universe;
 		lastPoints = new LinkedList<Point>();
-		lastPoints.add(new Point(universe.getWidth() / 2, universe.getHeight() / 2)); //Start point in the middle of the screen
+		lastPoints.add(new Point(universe.getWidth() / 2, universe.getHeight() / 2)); //Add first position in the middle of the screen
 	}
 	
 	//Called in every universe.repaint()
@@ -35,7 +33,7 @@ public class Cursor {
 		}
 	}
 	
-	//Returns a list of all the points on the follow-line
+	//Returns a list of all the points on the cursor-line
 	public LinkedList<Point> getPoints() {
 		LinkedList<Point> returnList = new LinkedList<Point>();
 		
@@ -48,7 +46,7 @@ public class Cursor {
 	}
 	
 	//Called in every universe.repaint()
-	//paints the follow-line on the screen
+	//paints the cursor-line on the screen
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.RED);
 		g2d.setStroke(new BasicStroke(5));

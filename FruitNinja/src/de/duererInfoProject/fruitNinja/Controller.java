@@ -13,6 +13,7 @@ public class Controller {
 	private Universe universe;
 	private Preferences preferences;
 	private Game game;
+	private SoundManager soundManager;
 
 	public static void main(String[] args) {
 		new Controller();
@@ -21,8 +22,9 @@ public class Controller {
 	public Controller() {
 		//Initialize other Classes
 		preferences = Preferences.userNodeForPackage(de.duererInfoProject.fruitNinja.Controller.class);
-		highscore = new Highscore();
-		universe = new Universe(this, Controller.class.getResource("img/background.jpg").getPath());
+		highscore = new Highscore(this);
+		soundManager = new SoundManager(this);
+		universe = new Universe(this, "img/background.jpg");
 		gui = new GUI(this);
 		kinect = new Kinect();
 	}
@@ -45,10 +47,11 @@ public class Controller {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			errorMessage(e, "Error while setting style!");
 		}
 	}
 	
+	//Stops the running game and instantly starts an new one
 	public void restartGame() {
 		stopGame();
 		newGame();
@@ -78,7 +81,15 @@ public class Controller {
 		return game;
 	}
 	
-	//Easter egg: Because I'm too lazy I need this
+	public SoundManager getSoundManager() {
+		return soundManager;
+	}
+	
+	public void errorMessage(Exception e, String message) {
+		gui.errorMessage(e, message);
+	}
+	
+	//Easter egg: Because I'm too lazy I need this :P
 	public void log(String str) {
 		System.out.println(str);
 	}

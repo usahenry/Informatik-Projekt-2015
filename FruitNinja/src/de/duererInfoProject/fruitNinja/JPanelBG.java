@@ -2,7 +2,6 @@ package de.duererInfoProject.fruitNinja;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -17,9 +16,9 @@ public class JPanelBG extends JPanel {
 	public JPanelBG(String img) {
 		super();
 		
-		//Try to get the img-File
+		//Load img-File
 		try {
-			bg = ImageIO.read(new File(img));
+			bg = ImageIO.read(JPanelBG.class.getResource(img));
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 		}

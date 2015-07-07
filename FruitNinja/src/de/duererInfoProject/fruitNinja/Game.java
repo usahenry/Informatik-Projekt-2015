@@ -6,7 +6,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 //A new instance of this is created for every new game started
 //Starts and controls a running game
@@ -19,15 +18,17 @@ public class Game {
 	private LinkedList<ItemPart> itemPartsList; //List of all currently active ItemParts
 	private Random random;
 	private Timer timer;
+	private SoundManager soundManager;
 	private int lives, score, playtime;
 	public final int SPAWN_BORDER = 200; //Items can only spawn SPAWN_BOREDER away from the window border (on the x-Axis) 
 	private final int FRAME_TIME = 10; //Time between each repaint
 
 	public Game(Controller controller) {
-		//Getting other classes and initializing attributes
+		//Getting and initializing attributes
 		this.controller = controller;
 		universe = controller.getUniverse();
-		cursor = new Cursor(this, universe);
+		soundManager = controller.getSoundManager();
+		cursor = new Cursor(universe);
 		itemList = new LinkedList<Item>();
 		itemPartsList = new LinkedList<ItemPart>();
 		random = new Random();
@@ -46,6 +47,7 @@ public class Game {
 		} else if (itemTypeID == Bomb.ItemTypeID) {
 			itemList.add(new Bomb(x, this, universe));
 		}
+		soundManager.playSwoosh(itemTypeID);
 	}
 	
 	//Starts the game
@@ -56,7 +58,7 @@ public class Game {
 		updateTime();
 		countdown(3);
 		tick(10);
-		randomItemTick(3500); //Starts spawning Items after 3,5, when the countdown finished
+		randomItemTick(3500); //Starts spawning Items 0.5 seconds after the countdown finished
 	}
 	
 	//Stops the game
@@ -84,7 +86,7 @@ public class Game {
 			@Override
 			public void run() {
 				playtime++;
-				if (playtime % 100 == 0) updateTime();
+				if (playtime % 100 == 0) updateTime(); //Update Time if a full second is reached
 				universe.repaint();
 				
 				tick(FRAME_TIME);
@@ -92,14 +94,14 @@ public class Game {
 		}, time);
 	}
 	
-	//Spawns a random Item (10 % Bomb, 90 % Fruit) at a random position after @time and repeats it randomly every 0,5 - 1,5 seconds
+	//Spawns a random Item (10 % Bomb, 90 % Fruit) at a random position after @time and repeats it randomly, speeding up over time
 	public void randomItemTick(int time) {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				if (random.nextInt(10) > 1) spawnItemRandom(Fruit.ItemTypeID);
 				else spawnItemRandom(Bomb.ItemTypeID);
-				int bonusTimeToNextTick = Math.round(((-800) / 60) * (playtime / 100)) + 1000;
+				int bonusTimeToNextTick = Math.round(((-800) / 60) * (playtime / 100)) + 1000; //Calculate additional time to next tick depending on playtime
 				if (bonusTimeToNextTick < 200) bonusTimeToNextTick = 300;
 				randomItemTick(random.nextInt(700) + bonusTimeToNextTick);
 			}
@@ -107,32 +109,36 @@ public class Game {
 	}
 	
 	//Called by Items if they left the screen
-	//Removes @item from the list and updates lives if necessary
+	//Removes @item from the itemList and updates lives if necessary
 	public void itemOutOfScreen(Item item) {
 		itemList.remove(item);
 		
 		if (item.getItemTypeID() == Fruit.ItemTypeID) {
 			lives--;
 			updateLives();
+			soundManager.playMiss();
 		}
 	}
 	
 	//Called by ItemParts if they left the screen
-	//Removes @itemPart from the list
+	//Removes @itemPart from the itemPartsList
 	public void itemPartOutOfScreen(ItemPart itemPart) {
 		itemPartsList.remove(itemPart);
 	}
 	
-	//Called by an Item if they get hit by the cursor
+	//Called by an Items if they got hit by the cursor
 	//Removes the item from the list of active items, creates ItemParts and updates score and lives if necessary
 	public void hit(Item item) {
 		if (item.getItemTypeID() == Fruit.ItemTypeID) {
 			for (ItemPart itemPart : item.createItemParts()) itemPartsList.add(itemPart); //Create 2 ItemParts and add them to the list of active itemParts
 			score++;
 			updateScore();
+			soundManager.playSplash();
 		} else if (item.getItemTypeID() == Bomb.ItemTypeID) {
+			itemPartsList.add(item.createItemParts().getFirst());
 			lives--;
 			updateLives();
+			soundManager.playBomb();
 		}
 		itemList.remove(item);
 	}
@@ -144,19 +150,19 @@ public class Game {
 		dialog.setVisible(true);
 	}
 	
+	public void updateLives() {
+		universe.setLives(lives);
+		if (lives == 0) {
+			gameOver();
+		}
+	}
+	
 	public void updateScore() {
 		universe.setScore(score);
 	}
 	
 	public void updateTime() {
 		universe.setTime(Math.round(playtime / 100));
-	}
-	
-	public void updateLives() {
-		universe.setLives(lives);
-		if (lives == 0) {
-			gameOver();
-		}
 	}
 	
 	public Cursor getCursor() {

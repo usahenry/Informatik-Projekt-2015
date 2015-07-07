@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-//Draws the game
+//Displays the game
 public class Universe extends JPanelBG {
 	
 	private static final long serialVersionUID = 1L;
@@ -28,33 +28,17 @@ public class Universe extends JPanelBG {
 		controller = g;
 		
 		//Initializing the GUI
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.addMouseListener(new MouseAdapter() {
+		JLabel stopButton = new JLabel("");
+		stopButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				controller.stopGame();
 			}
 		});
+		stopButton.setIcon(new ImageIcon(Universe.class.getResource("/de/duererInfoProject/fruitNinja/img/stop-icon.png")));
+		stopButton.setBounds(20, 20, 48, 48);
+		add(stopButton);
 		updateCursor();
-		
-		lblNewLabel.setIcon(new ImageIcon(Universe.class.getResource("/de/duererInfoProject/fruitNinja/img/pause-icon.png")));
-		lblNewLabel.setBounds(10, 11, 48, 48);
-		add(lblNewLabel);
-		
-//		JLabel pmgrn = new JLabel("");
-//		Icon pmgrnNormal = new ImageIcon(Universe.class.getResource("/de/duererInfoProject/fruitNinja/img/Pomegranate.png"));
-//		Icon pmgrnSplit = new ImageIcon(Universe.class.getResource("/de/duererInfoProject/fruitNinja/img/PomegranateSplit.png"));
-//		pmgrn.setIcon(pmgrnNormal);
-//		
-//		pmgrn.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent arg0) {
-//				pmgrn.setIcon(pmgrnSplit);
-//			}
-//		});
-//		
-//		pmgrn.setBounds(50, 50, 200, 200);
-//		add(pmgrn);
 		
 		countdown = new JLabel("");
 		countdown.setHorizontalAlignment(SwingConstants.CENTER);
@@ -79,6 +63,7 @@ public class Universe extends JPanelBG {
 		add(time);
 	}
 	
+	//Called every time a new game gets started
 	//Position the lives label at the right position
 	public void postInit() {
 		lives.setBounds(getWidth() - 300, 10, 290, 50);
@@ -86,8 +71,8 @@ public class Universe extends JPanelBG {
 		updateCursor();
 	}
 
-	//Called by game
-	//Shows @count at the countdown label
+	//Called by game to set the countdown
+	//Shows @count at the countdown label if its positive
 	public void setCountdown(int count) {
 		if (count > 0) {
 			countdown.setBounds((getWidth()/2) - 75, (getHeight()/2) - 75, 150, 150);
@@ -97,30 +82,13 @@ public class Universe extends JPanelBG {
 		}
 	}
 	
+	//Updates the cursor to the currently selected one
 	public void updateCursor() {
 		int cursorNumber = controller.getPreferences().getInt("cursor", 0);
 		java.awt.Cursor cursor = java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.DEFAULT_CURSOR);
 		if (cursorNumber == 3) cursor = toolkit.createCustomCursor(toolkit.getImage(GUI.class.getResource("img/cursor" + cursorNumber + ".png")), new Point(1, 1), "cursor" + cursorNumber);
 		else if (cursorNumber == 2 || cursorNumber == 1) cursor = toolkit.createCustomCursor(toolkit.getImage(GUI.class.getResource("img/cursor" + cursorNumber + ".png")), new Point(16, 16), "cursor" + cursorNumber);
 		setCursor(cursor);
-	}
-	
-	public void setScore(int s) {
-		score.setText("Score: " + s);
-	}
-	
-	public void setTime(int t) {
-		time.setText("Time: " + t);
-	}
-	
-	public void setLives(int l) {
-		String string = "";
-		for (int i = 0; i < l; i++) string += " X";
-		lives.setText("Lives:" + string);
-	}
-	
-	public double getGravity() {
-		return GRAVITY;
 	}
 	
 	//Override paint method to also paint the game
@@ -146,5 +114,23 @@ public class Universe extends JPanelBG {
 			itemPart.move();
 			itemPart.paint(g2d);
 		}
+	}
+	
+	public void setScore(int s) {
+		score.setText("Score: " + s);
+	}
+	
+	public void setTime(int t) {
+		time.setText("Time: " + t);
+	}
+	
+	public void setLives(int l) {
+		String string = "";
+		for (int i = 0; i < l; i++) string += " X";
+		lives.setText("Lives:" + string);
+	}
+	
+	public double getGravity() {
+		return GRAVITY;
 	}
 }
