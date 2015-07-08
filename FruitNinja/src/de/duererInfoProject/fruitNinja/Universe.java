@@ -6,10 +6,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -28,14 +31,16 @@ public class Universe extends JPanelBG {
 		controller = g;
 		
 		//Initializing the GUI
-		JLabel stopButton = new JLabel("");
-		stopButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		JButton stopButton = new JButton(new ImageIcon(Universe.class.getResource("img/stop-icon.png")));
+		stopButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				controller.stopGame();
 			}
 		});
-		stopButton.setIcon(new ImageIcon(Universe.class.getResource("/de/duererInfoProject/fruitNinja/img/stop-icon.png")));
+		stopButton.setBorderPainted(false); 
+		stopButton.setContentAreaFilled(false); 
+		stopButton.setFocusPainted(false); 
+		stopButton.setOpaque(false);
 		stopButton.setBounds(20, 20, 48, 48);
 		add(stopButton);
 		updateCursor();
@@ -126,7 +131,8 @@ public class Universe extends JPanelBG {
 	
 	public void setLives(int l) {
 		String string = "";
-		for (int i = 0; i < l; i++) string += " X";
+		if (l > 3) string = " " + l + " X";
+		else for (int i = 0; i < l; i++) string += " X";
 		lives.setText("Lives:" + string);
 	}
 	

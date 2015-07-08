@@ -90,9 +90,10 @@ public class GUI extends JFrame {
 		Object[] options = {"More Details", "OK"};
 		int result = JOptionPane.showOptionDialog(this, message, "An Error has occured!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[1]);
 		if (result == JOptionPane.YES_OPTION) {
-			PrintWriter printWriter = new PrintWriter(new StringWriter());
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(stringWriter);
 			e.printStackTrace(printWriter);
-			JOptionPane.showMessageDialog(this, printWriter.toString(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, stringWriter.toString(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -278,7 +279,7 @@ public class GUI extends JFrame {
 		verticalStrut.setPreferredSize(new Dimension(0, 40));
 		verticalBox.add(verticalStrut);
 
-		JButton btnHand = new JButton("Right Hand");
+		JButton btnHand = new JButton("Windows Cursor");
 		btnHand.setPreferredSize(new Dimension(200, 50));
 		btnHand.setMaximumSize(new Dimension(200, 50));
 		verticalBox.add(btnHand);
@@ -315,14 +316,43 @@ public class GUI extends JFrame {
 		btnHand.setIcon(new ImageIcon(GUI.class
 				.getResource("/de/duererInfoProject/fruitNinja/img/cursor"
 						+ cursor + ".png")));
-		if (cursor == 0)
-			btnHand.setText("Windows Cursor");
-		else if (cursor == 1)
-			btnHand.setText("Ninja Cursor");
-		else if (cursor == 2)
-			btnHand.setText("Red Cursor");
-		else if (cursor == 3)
-			btnHand.setText("No Cursor");
+		if (cursor == 0) btnHand.setText("Windows Cursor");
+		else if (cursor == 1) btnHand.setText("Ninja Cursor");
+		else if (cursor == 2) btnHand.setText("Red Cursor");
+		else if (cursor == 3) btnHand.setText("No Cursor");
+		
+		Component verticalStrut_8 = Box.createVerticalStrut(20);
+		verticalStrut_8.setPreferredSize(new Dimension(0, 40));
+		verticalBox.add(verticalStrut_8);
+		
+		JButton button_1 = new JButton("Right Hand");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean rightHand = controller.getPreferences().getBoolean("rightHand", true);
+				if (rightHand) {
+					controller.getPreferences().putBoolean("rightHand", false);
+					button_1.setText("Left Hand");
+					button_1.setIcon(new ImageIcon(GUI.class.getResource("img/left-hand-icon.png")));
+				} else {
+					controller.getPreferences().putBoolean("rightHand", true);
+					button_1.setText("Right Hand");
+					button_1.setIcon(new ImageIcon(GUI.class.getResource("img/right-hand-icon.png")));
+				}
+				controller.getKinect().updateHand();
+			}
+		});
+		if (controller.getPreferences().getBoolean("rightHand", true)) button_1.setIcon(new ImageIcon(GUI.class.getResource("img/right-hand-icon.png")));
+		else {
+			button_1.setIcon(new ImageIcon(GUI.class.getResource("img/left-hand-icon.png")));
+			button_1.setText("Left Hand");
+		}
+		button_1.setPreferredSize(new Dimension(200, 50));
+		button_1.setMaximumSize(new Dimension(200, 50));
+		button_1.setIconTextGap(10);
+		button_1.setHorizontalAlignment(SwingConstants.LEFT);
+		button_1.setFont(new Font("SansSerif", Font.BOLD, 15));
+		button_1.setAlignmentX(0.5f);
+		verticalBox.add(button_1);
 
 		Component verticalGlue_2 = Box.createVerticalGlue();
 		verticalBox.add(verticalGlue_2);

@@ -2,14 +2,13 @@ package de.duererInfoProject.fruitNinja;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -41,7 +40,7 @@ public class GameOverDialog extends JDialog {
 		this.playtime = playtime;
 		controller.setLookAndFeel();
 		setResizable(false);
-		setBounds(350, 250, 577, 610);
+		setBounds(350, 200, 577, 610);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -93,13 +92,14 @@ public class GameOverDialog extends JDialog {
 		contentPanel.add(scrollPane);
 		{
 			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+			FlowLayout fl_buttonPane = new FlowLayout(FlowLayout.CENTER);
+			buttonPane.setLayout(fl_buttonPane);
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("Main Menu");
-				okButton.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent arg0) {
+				okButton.setPreferredSize(new Dimension(111, 55));
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
 						controller.stopGame();
 						dispose();
 					}
@@ -110,9 +110,9 @@ public class GameOverDialog extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("New Game");
-				cancelButton.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
+				cancelButton.setPreferredSize(new Dimension(111, 55));
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
 						controller.restartGame();
 						dispose();
 					}

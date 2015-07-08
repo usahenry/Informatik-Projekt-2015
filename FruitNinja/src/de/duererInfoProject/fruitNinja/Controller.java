@@ -26,7 +26,9 @@ public class Controller {
 		soundManager = new SoundManager(this);
 		universe = new Universe(this, "img/background.jpg");
 		gui = new GUI(this);
-		kinect = new Kinect();
+		kinect = new Kinect(this);
+		//Start Kinect and launch Skeleton and player index stream
+		kinect.start(Kinect.SKELETON | Kinect.PLAYER_INDEX);
 	}
 
 	//Starts a new Game
@@ -90,7 +92,7 @@ public class Controller {
 	}
 	
 	//Easter egg: Because I'm too lazy I need this :P
-	public void log(String str) {
+	public static void log(String str) {
 		System.out.println(str);
 	}
 }

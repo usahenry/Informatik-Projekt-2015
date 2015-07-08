@@ -33,7 +33,7 @@ public class Game {
 		itemPartsList = new LinkedList<ItemPart>();
 		random = new Random();
 		timer = new Timer();
-		lives = 3;
+		lives = 5;
 		score = 0;
 		playtime = 0;
 	}
@@ -46,6 +46,12 @@ public class Game {
 			itemList.add(new Fruit(x, this, universe));
 		} else if (itemTypeID == Bomb.ItemTypeID) {
 			itemList.add(new Bomb(x, this, universe));
+		} else if (itemTypeID == BonusPointsItem.ItemTypeID) {
+			itemList.add(new BonusPointsItem(x, this, universe));
+		} else if (itemTypeID == LiveItem.ItemTypeID) {
+			itemList.add(new LiveItem(x, this, universe));
+		} else if (itemTypeID == ScoreBomb.ItemTypeID) {
+			itemList.add(new ScoreBomb(x, this, universe));
 		}
 		soundManager.playSwoosh(itemTypeID);
 	}
@@ -94,13 +100,17 @@ public class Game {
 		}, time);
 	}
 	
-	//Spawns a random Item (10 % Bomb, 90 % Fruit) at a random position after @time and repeats it randomly, speeding up over time
+	//Spawns a random Item (85 % Fruit, 5 % BonusPointsItem, 5 % ScoreBomb,, 4 % Bomb 1 % LiveItem) at a random position after @time and repeats it randomly, speeding up over time
 	public void randomItemTick(int time) {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if (random.nextInt(10) > 1) spawnItemRandom(Fruit.ItemTypeID);
-				else spawnItemRandom(Bomb.ItemTypeID);
+				int randomNumber = random.nextInt(100);
+				if (randomNumber >= 15) spawnItemRandom(Fruit.ItemTypeID);
+				else if (randomNumber >= 10) spawnItemRandom(Bomb.ItemTypeID);
+				else if (randomNumber >= 5) spawnItemRandom(BonusPointsItem.ItemTypeID);
+				else if (randomNumber >= 1) spawnItemRandom(ScoreBomb.ItemTypeID);
+				else spawnItemRandom(LiveItem.ItemTypeID); 
 				int bonusTimeToNextTick = Math.round(((-800) / 60) * (playtime / 100)) + 1000; //Calculate additional time to next tick depending on playtime
 				if (bonusTimeToNextTick < 200) bonusTimeToNextTick = 300;
 				randomItemTick(random.nextInt(700) + bonusTimeToNextTick);
@@ -139,6 +149,23 @@ public class Game {
 			lives--;
 			updateLives();
 			soundManager.playBomb();
+		} else if (item.getItemTypeID() == ScoreBomb.ItemTypeID) {
+			itemPartsList.add(item.createItemParts().getFirst());
+			score -= 10;
+			updateScore();
+			soundManager.playBomb();
+		} else if (item.getItemTypeID() == BonusPointsItem.ItemTypeID) {
+			for (ItemPart itemPart : item.createItemParts()) itemPartsList.add(itemPart);
+			score += 10;
+			updateScore();
+			soundManager.playSplash();
+			soundManager.playScore();
+		} else if (item.getItemTypeID() == LiveItem.ItemTypeID) {
+			for (ItemPart itemPart : item.createItemParts()) itemPartsList.add(itemPart);
+			lives++;
+			updateLives();
+			soundManager.playSplash();
+			soundManager.playLives();
 		}
 		itemList.remove(item);
 	}

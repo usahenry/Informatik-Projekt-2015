@@ -76,7 +76,7 @@ public abstract class Item {
 	//Choose randomly if the Item will have to change it's direction, influenced by x at spawn
 	public boolean changeDirection() {
 		double xMid = universe.getWidth() / 2;
-		double chance = Math.abs((0.5 / ((universe.getWidth() - (game.SPAWN_BORDER * 1.9)) - xMid)) * (x - xMid)) + 0.5; //Chance the Item will fly towards the side it didn't spawn on, 50 % in the middle -> 100 % at 1.9 * SPAWN_BORDER distance from the border
+		double chance = Math.abs((0.5 / ((universe.getWidth() - (game.SPAWN_BORDER * 2)) - xMid)) * (x - xMid)) + 0.5; //Chance the Item will fly towards the side it didn't spawn on, 50 % in the middle -> 100 % at 2 * SPAWN_BORDER distance from the border
 		chance = Math.round(chance * 100);
 		boolean otherSide = random.nextInt(100) <= chance;
 		boolean onLeftSide = x < universe.getWidth() / 2;

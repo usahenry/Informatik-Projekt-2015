@@ -22,6 +22,8 @@ public class SoundManager {
 	private URL back_button_sound;
 	private URL miss_sound;
 	private Random random;
+	private URL lives_sound;
+	private URL score_sound;
 	
 	public SoundManager(Controller controller) {
 		//Initialize attributes
@@ -37,6 +39,8 @@ public class SoundManager {
 		back_button_sound = GUI.class.getResource("sound/button2.wav");
 		bomb_sound = GUI.class.getResource("sound/bomb.wav");
 		miss_sound = GUI.class.getResource("sound/miss.wav");
+		lives_sound = GUI.class.getResource("sound/lives.wav");
+		score_sound = GUI.class.getResource("sound/score.wav");
 		for (int i = 0; i < 4; i++) splashSounds[i] = GUI.class.getResource("sound/splash" + (i + 1) + ".wav");
 	}
 	
@@ -58,7 +62,7 @@ public class SoundManager {
 			clip.open(AudioSystem.getAudioInputStream(audio));
 			clip.start();
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
+			controller.errorMessage(e, "Error while loading an audio file!");
 		}
 	}
 	
@@ -68,12 +72,20 @@ public class SoundManager {
 	}
 	
 	public void playSwoosh(int itemTypeID) {
-		if (itemTypeID == Bomb.ItemTypeID) playSound(bomb_swoosh_sound);
+		if (itemTypeID == Bomb.ItemTypeID || itemTypeID == ScoreBomb.ItemTypeID) playSound(bomb_swoosh_sound);
 		else playSound(swoosh_sound);
+	}
+	
+	public void playLives() {
+		playSound(lives_sound);
 	}
 	
 	public void playBomb() {
 		playSound(bomb_sound);
+	}
+	
+	public void playScore() {
+		playSound(score_sound);
 	}
 	
 	public void playMiss() {
